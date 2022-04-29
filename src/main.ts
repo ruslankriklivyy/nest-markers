@@ -4,14 +4,14 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   app.setGlobalPrefix('api');
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors({
-    credentials: true,
-    origin: process.env.API_URL,
-  });
+  // app.enableCors({
+  //   credentials: true,
+  //   origin: process.env.API_URL,
+  // });
   await app.listen(process.env.PORT || 3001);
 }
 bootstrap();
