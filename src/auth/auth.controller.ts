@@ -13,7 +13,6 @@ import { Request, Response } from 'express';
 import { UserLoginDto } from '../user/dto/user-login.dto';
 import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
-import { IUserAuth } from '../user/dto/user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -31,6 +30,8 @@ export class AuthController {
 
     res.cookie('refresh_token', data.refresh_token, {
       maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
+      httpOnly: true,
+      domain: 'my-markers-frontend',
     });
     return data;
   }
@@ -44,6 +45,8 @@ export class AuthController {
 
     res.cookie('refresh_token', data.refresh_token, {
       maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
+      httpOnly: true,
+      domain: 'my-markers-frontend',
     });
     return data;
   }
@@ -68,6 +71,8 @@ export class AuthController {
 
     res.cookie('refresh_token', data.refresh_token, {
       maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
+      httpOnly: true,
+      domain: 'my-markers-frontend',
     });
     return data;
   }
@@ -88,6 +93,8 @@ export class AuthController {
     const data = await this.authService.signInFromGoogle(accessToken);
     res.cookie('refresh_token', data.refresh_token, {
       maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
+      httpOnly: true,
+      domain: 'my-markers-frontend',
     });
     return data;
   }
