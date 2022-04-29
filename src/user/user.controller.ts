@@ -29,8 +29,12 @@ export class UserController {
   }
 
   @Get('user')
-  async getOne(@Res({ passthrough: true }) res: Response, @Req() req: Request) {
-    const { refresh_token } = req.cookies;
+  async getOne(
+    @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
+    @Body() { refresh_token }: { refresh_token: string },
+  ) {
+    // const { refresh_token } = req.cookies;
     const { email } = await this.tokenService.validateRefreshToken(
       refresh_token,
     );

@@ -20,8 +20,11 @@ export class MarkerController {
   constructor(private markerService: MarkerService) {}
 
   @Get('markers')
-  getAll(@Req() req: Request) {
-    const { refresh_token } = req.cookies;
+  getAll(
+    @Req() req: Request,
+    @Body() { refresh_token }: { refresh_token: string },
+  ) {
+    // const { refresh_token } = req.cookies;
     return this.markerService.getAll(refresh_token);
   }
 
