@@ -32,6 +32,8 @@ export class AuthController {
       maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
       httpOnly: true,
       domain: this.configService.get('CLIENT_DOMAIN'),
+      sameSite: 'none',
+      secure: true,
     });
     return data;
   }
@@ -47,6 +49,8 @@ export class AuthController {
       maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
       httpOnly: true,
       domain: this.configService.get('CLIENT_DOMAIN'),
+      sameSite: 'none',
+      secure: true,
     });
     return data;
   }
@@ -67,13 +71,14 @@ export class AuthController {
     @Req() req: Request,
   ) {
     const { refresh_token } = req.cookies;
-    console.log(req.cookies);
     const data = await this.authService.refresh(refresh_token);
 
     res.cookie('refresh_token', data.refresh_token, {
       maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
       httpOnly: true,
       domain: this.configService.get('CLIENT_DOMAIN'),
+      sameSite: 'none',
+      secure: true,
     });
     return data;
   }
@@ -96,6 +101,8 @@ export class AuthController {
       maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
       httpOnly: true,
       domain: this.configService.get('CLIENT_DOMAIN'),
+      sameSite: 'none',
+      secure: true,
     });
     return data;
   }
