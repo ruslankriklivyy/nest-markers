@@ -9,11 +9,11 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors({
-    credentials: true,
-    origin: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-  });
+  // app.enableCors({
+  //   credentials: true,
+  //   origin: true,
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  // });
   app.use(
     session({
       secret: process.env.SESSION_SECRET || 'Super Secret (change it)',
