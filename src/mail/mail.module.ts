@@ -11,10 +11,10 @@ import { ConfigService } from '@nestjs/config';
     MailerModule.forRootAsync({
       useFactory: async (config: ConfigService) => ({
         transport: {
-          host: config.get('SMTP_HOST'),
+          host: config.get('SMTP_HOST') || 'smtp.gmail.com',
           secure: false,
           auth: {
-            user: config.get('SMPT_USER'),
+            user: config.get('SMPT_USER') || 'miminimalizm@gmail.com',
             pass: config.get('SMTP_PASSWORD'),
           },
         },
