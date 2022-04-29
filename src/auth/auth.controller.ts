@@ -30,7 +30,7 @@ export class AuthController {
 
     res.cookie('refresh_token', data.refresh_token, {
       maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
-      httpOnly: true,
+      // httpOnly: true,
       domain: this.configService.get('CLIENT_DOMAIN'),
       sameSite: 'none',
       secure: true,
@@ -47,7 +47,7 @@ export class AuthController {
 
     res.cookie('refresh_token', data.refresh_token, {
       maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
-      httpOnly: true,
+      // httpOnly: true,
       domain: this.configService.get('CLIENT_DOMAIN'),
       sameSite: 'none',
       secure: true,
@@ -75,7 +75,7 @@ export class AuthController {
 
     res.cookie('refresh_token', data.refresh_token, {
       maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
-      httpOnly: true,
+      // httpOnly: true,
       domain: this.configService.get('CLIENT_DOMAIN'),
       sameSite: 'none',
       secure: true,
@@ -99,7 +99,7 @@ export class AuthController {
     const data = await this.authService.signInFromGoogle(accessToken);
     res.cookie('refresh_token', data.refresh_token, {
       maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
-      httpOnly: true,
+      // httpOnly: true,
       domain: this.configService.get('CLIENT_DOMAIN'),
       sameSite: 'none',
       secure: true,
