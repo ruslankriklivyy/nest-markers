@@ -22,6 +22,9 @@ async function bootstrap() {
       cookie: {
         sameSite: 'none', // must be 'none' to enable cross-site delivery
         secure: true, // must be true if sameSite='none'
+        credentials: true,
+        origin: true,
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
       },
     }),
   );
