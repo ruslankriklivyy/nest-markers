@@ -28,12 +28,11 @@ export class AuthController {
   ) {
     const data = await this.authService.registration(dto);
 
-    // res.cookie('refresh_token', data.refresh_token, {
-    //   maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
-    //   httpOnly: true,
-    //   domain: this.configService.get('CLIENT_DOMAIN'),
-    //   sameSite: 'none',
-    // });
+    res.cookie('refresh_token', data.refresh_token, {
+      maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
+      httpOnly: true,
+      domain: this.configService.get('CLIENT_DOMAIN'),
+    });
     return data;
   }
 
@@ -44,12 +43,11 @@ export class AuthController {
   ) {
     const data = await this.authService.login(dto);
 
-    // res.cookie('refresh_token', data.refresh_token, {
-    //   maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
-    //   httpOnly: true,
-    //   domain: this.configService.get('CLIENT_DOMAIN'),
-    //   sameSite: 'none',
-    // });
+    res.cookie('refresh_token', data.refresh_token, {
+      maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
+      httpOnly: true,
+      domain: this.configService.get('CLIENT_DOMAIN'),
+    });
     return data;
   }
 
@@ -67,17 +65,16 @@ export class AuthController {
   async refresh(
     @Res({ passthrough: true }) res: Response,
     @Req() req: Request,
-    @Body() { refresh_token }: { refresh_token: string },
   ) {
-    // const { refresh_token } = req.cookies;
+    const { refresh_token } = req.cookies;
+    console.log(req.cookies);
     const data = await this.authService.refresh(refresh_token);
 
-    // res.cookie('refresh_token', data.refresh_token, {
-    //   maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
-    //   httpOnly: true,
-    //   domain: this.configService.get('CLIENT_DOMAIN'),
-    //   sameSite: 'none',
-    // });
+    res.cookie('refresh_token', data.refresh_token, {
+      maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
+      httpOnly: true,
+      domain: this.configService.get('CLIENT_DOMAIN'),
+    });
     return data;
   }
 
@@ -95,12 +92,11 @@ export class AuthController {
     @Body() { accessToken },
   ) {
     const data = await this.authService.signInFromGoogle(accessToken);
-    // res.cookie('refresh_token', data.refresh_token, {
-    //   maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
-    //   httpOnly: true,
-    //   domain: this.configService.get('CLIENT_DOMAIN'),
-    //   sameSite: 'none',
-    // });
+    res.cookie('refresh_token', data.refresh_token, {
+      maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
+      httpOnly: true,
+      domain: this.configService.get('CLIENT_DOMAIN'),
+    });
     return data;
   }
 }
