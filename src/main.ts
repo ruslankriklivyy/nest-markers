@@ -8,11 +8,12 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors({
-    credentials: true,
-    origin: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-  });
+  app.enableCors();
+  // {
+  //   credentials: true,
+  //     origin: true,
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  // }
   await app.listen(process.env.PORT || 3001);
 }
 bootstrap();
