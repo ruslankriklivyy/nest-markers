@@ -11,7 +11,6 @@ async function bootstrap() {
   app.enableCors({
     credentials: true,
     origin: true,
-    // origin: process.env.CLIENT_URL || 'https://my-markers-frontend.vercel.app',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
   });
   await app.listen(process.env.PORT || 3001);
