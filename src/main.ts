@@ -10,7 +10,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
     credentials: true,
-    origin: process.env.CLIENT_URL,
+    origin: process.env.API_URL,
   });
   await app.listen(process.env.PORT || 3001);
 }
