@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-import { join } from 'path';
 import { MailService } from './mail.service';
 import { ConfigService } from '@nestjs/config';
 
@@ -16,6 +14,7 @@ import { ConfigService } from '@nestjs/config';
           auth: {
             user: config.get('SMPT_USER') || 'miminimalizm@gmail.com',
             pass: config.get('SMTP_PASSWORD'),
+            api_key: config.get('OAUTH_GOOGLE_ID'),
           },
         },
         defaults: {
