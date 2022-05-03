@@ -1,7 +1,7 @@
 import { CustomField, LayerType } from '../schemas/layer.schema';
 import { IsNotEmpty } from 'class-validator';
 
-export class LayerDto {
+export class LayerCreateDto {
   @IsNotEmpty()
   readonly name: string;
 

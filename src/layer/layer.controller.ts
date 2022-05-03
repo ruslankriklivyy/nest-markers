@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { LayerService } from './layer.service';
-import { LayerDto } from './dto/layer.dto';
+import { LayerCreateDto } from './dto/layer-create.dto';
 import { LayerUpdateDto } from './dto/layer-update.dto';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 
@@ -32,7 +32,7 @@ export class LayerController {
 
   @UseGuards(JwtGuard)
   @Post('layers/create')
-  create(@Body() dto: LayerDto, @Req() req: Request) {
+  create(@Body() dto: LayerCreateDto, @Req() req: Request) {
     const { refresh_token } = req.cookies;
 
     return this.layerService.create(dto, refresh_token);
