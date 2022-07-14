@@ -29,6 +29,7 @@ export class FileService {
           if (!fileData.marker) delete fileData.marker;
 
           const uploadFile = this.fileModel.create(fileData);
+
           resolve(uploadFile);
         })
         .end(file?.buffer),
