@@ -8,11 +8,12 @@ import {
   UseGuards,
   Body,
 } from '@nestjs/common';
+import { Response, Request } from 'express';
+
 import { UserService } from './user.service';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { TokenService } from '../token/token.service';
-import { Response, Request } from 'express';
-import { UserDto } from './dto/user.dto';
+
 import { UserUpdateDto } from './dto/user-update.dto';
 
 @UseGuards(JwtGuard)
@@ -34,10 +35,7 @@ export class UserController {
     const { email } = await this.tokenService.validateRefreshToken(
       refresh_token,
     );
-    const user = await this.userService.getOneUser(email);
-    const userDto = new UserDto(user);
-
-    return userDto;
+    return this.userService.getOneUser(email);
   }
 
   @Patch('user/:id')

@@ -1,7 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Marker, MarkerDocument } from './schemas/marker.schema';
 import { Model } from 'mongoose';
+
+import { Marker, MarkerDocument } from './schemas/marker.schema';
 import { MarkerDto } from './dto/marker.dto';
 import { MarkerUpdateDto } from './dto/marker-update.dto';
 import { TokenService } from '../token/token.service';
@@ -20,7 +21,7 @@ export class MarkerService {
   async getAll(refresh_token: string) {
     const markers = await this.markerModel.find({});
     const user = this.tokenService.validateRefreshToken(refresh_token);
-    let newMarkers = [];
+    const newMarkers = [];
 
     if (!user) {
       for (const elem of markers) {
@@ -37,27 +38,15 @@ export class MarkerService {
     return markers;
   }
 
-  async getOne(id: string) {
-    const marker = await this.markerModel.findOne({ _id: id });
-
-    if (!marker) {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'Marker not found',
-        },
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    return marker;
+  getOne(id: string) {
+    return this.markerModel.findOne({ _id: id });
   }
 
   async create(markerDto: MarkerDto, refresh_token: string) {
     const user = await this.tokenService.validateRefreshToken(refresh_token);
-    const userFromBD = await this.userModel.findOne({ email: user.email });
+    const userFromDB = await this.userModel.findOne({ email: user.email });
 
-    if (!user || !userFromBD) {
+    if (!user || !userFromDB) {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
@@ -67,24 +56,20 @@ export class MarkerService {
       );
     }
 
-    const newMarker = { ...markerDto, user: userFromBD.id };
+    const newMarker = { ...markerDto, user: userFromDB.id };
 
-    if (!newMarker.preview) delete newMarker.preview;
     if (!newMarker.custom_fields) delete newMarker.custom_fields;
 
-    const marker = await this.markerModel.create(newMarker);
-    return marker;
+    return this.markerModel.create(newMarker);
   }
 
-  async update(id: string, newMarker: MarkerUpdateDto) {
-    const marker = await this.markerModel.findByIdAndUpdate(id, {
+  update(id: string, newMarker: MarkerUpdateDto) {
+    return this.markerModel.findByIdAndUpdate(id, {
       $set: newMarker,
     });
-    return marker;
   }
 
-  async remove(id: string) {
-    const marker = await this.markerModel.findByIdAndRemove(id);
-    return marker;
+  remove(id: string) {
+    return this.markerModel.findByIdAndRemove(id);
   }
 }

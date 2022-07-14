@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Layer, LayerDocument } from './schemas/layer.schema';
 import { Model } from 'mongoose';
 import { Marker, MarkerDocument } from '../marker/schemas/marker.schema';
-import { LayerCreateDto } from './dto/layer-create.dto';
+import { LayerDto } from './dto/layer.dto';
 import { LayerUpdateDto } from './dto/layer-update.dto';
 import { TokenService } from '../token/token.service';
 import { User, UserDocument } from '../user/schemas/user.schema';
@@ -44,7 +44,7 @@ export class LayerService {
     return layer;
   }
 
-  async create(layerDto: LayerCreateDto, refresh_token: string) {
+  async create(layerDto: LayerDto, refresh_token: string) {
     const { name, type } = layerDto;
 
     const user = this.tokenService.validateRefreshToken(refresh_token);

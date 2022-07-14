@@ -10,12 +10,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+
 import { FileService } from './file.service';
 import { TokenService } from '../token/token.service';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 
-@UseGuards(JwtGuard)
 @Controller('')
 export class FileController {
   constructor(
@@ -23,6 +23,7 @@ export class FileController {
     private tokenService: TokenService,
   ) {}
 
+  @UseGuards(JwtGuard)
   @Post('files')
   @UseInterceptors(FileInterceptor('file'))
   async create(
@@ -32,11 +33,11 @@ export class FileController {
   ) {
     const { refresh_token } = req.cookies;
     const user = await this.tokenService.validateRefreshToken(refresh_token);
-    const newFile = await this.fileService.create(file, user.id);
 
-    return newFile;
+    return this.fileService.create(file, user.id);
   }
 
+  @UseGuards(JwtGuard)
   @Delete('files/:id')
   delete(@Param() { id }) {
     return this.fileService.delete(id);

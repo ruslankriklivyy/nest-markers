@@ -7,7 +7,6 @@ export type MarkerDocument = Marker & mongoose.Document;
 
 export interface MarkerCustomField extends CustomField {
   value: string | File;
-  items?: string[];
 }
 
 @Schema()
