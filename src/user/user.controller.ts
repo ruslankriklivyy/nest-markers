@@ -13,7 +13,6 @@ import { Response, Request } from 'express';
 import { UserService } from './user.service';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { TokenService } from '../token/token.service';
-
 import { UserUpdateDto } from './dto/user-update.dto';
 
 @UseGuards(JwtGuard)
@@ -35,11 +34,12 @@ export class UserController {
     const { email } = await this.tokenService.validateRefreshToken(
       refresh_token,
     );
+
     return this.userService.getOneUser(email);
   }
 
   @Patch('user/:id')
-  async update(@Param() { id }, @Body() dto: UserUpdateDto) {
-    return this.userService.update(id, dto);
+  async updateOne(@Param() { id }, @Body() dto: UserUpdateDto) {
+    return this.userService.updateOne(id, dto);
   }
 }

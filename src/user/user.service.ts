@@ -29,9 +29,13 @@ export class UserService {
     return user;
   }
 
-  update(id: string, dto: UserUpdateDto) {
-    return this.userModel.findByIdAndUpdate(id, {
-      $set: dto,
-    });
+  updateOne(id: string, dto: UserUpdateDto) {
+    return this.userModel.findByIdAndUpdate(
+      id,
+      {
+        $set: dto,
+      },
+      { new: true },
+    );
   }
 }
