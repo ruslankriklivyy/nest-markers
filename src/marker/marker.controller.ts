@@ -16,6 +16,7 @@ import { JwtGuard } from '../auth/guard/jwt.guard';
 import { MarkerDto } from './dto/marker.dto';
 import { MarkerUpdateDto } from './dto/marker-update.dto';
 
+@UseGuards(JwtGuard)
 @Controller('markers')
 export class MarkerController {
   constructor(private markerService: MarkerService) {}
