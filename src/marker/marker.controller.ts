@@ -13,7 +13,6 @@ import { Request } from 'express';
 
 import { MarkerService } from './marker.service';
 import { JwtGuard } from '../auth/guard/jwt.guard';
-
 import { MarkerDto } from './dto/marker.dto';
 import { MarkerUpdateDto } from './dto/marker-update.dto';
 

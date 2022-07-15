@@ -1,16 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from '../user/schemas/user.schema';
 import { Model } from 'mongoose';
-import { TokenService } from '../token/token.service';
-import { UserRegistrationDto } from '../user/dto/user-registration.dto';
 import * as bcrypt from 'bcrypt';
 import * as uuid from 'uuid';
+import { ConfigService } from '@nestjs/config';
+import { HttpService } from '@nestjs/axios';
+
+import { User, UserDocument } from '../user/schemas/user.schema';
+import { TokenService } from '../token/token.service';
+import { UserRegistrationDto } from '../user/dto/user-registration.dto';
 import { IUserAuth, UserDto } from '../user/dto/user.dto';
 import { UserLoginDto } from '../user/dto/user-login.dto';
 import { MailService } from '../mail/mail.service';
-import { ConfigService } from '@nestjs/config';
-import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class AuthService {
@@ -50,10 +51,12 @@ export class AuthService {
     const activationUrl = `${this.configService.get(
       'API_URL',
     )}/api/auth/activate/${activationLink}`;
+
     await this.mailService.sendUserConfirmation(newUser, activationUrl);
 
     const newUserDto = new UserDto(newUser);
     const tokens = await this.tokenService.generateTokens(newUserDto);
+
     await this.tokenService.saveToken(newUserDto.id, tokens.refresh_token);
 
     return { ...tokens, user: newUserDto };
@@ -87,6 +90,7 @@ export class AuthService {
 
     const newUserDto = new UserDto(user);
     const tokens = await this.tokenService.generateTokens({ ...newUserDto });
+
     await this.tokenService.saveToken(newUserDto.id, tokens.refresh_token);
 
     return { ...tokens, user: newUserDto };
@@ -133,6 +137,7 @@ export class AuthService {
             const tokens = await this.tokenService.generateTokensFromGoogle(
               newUser,
             );
+
             await this.tokenService.saveToken(
               userFromBD._id,
               tokens.refresh_token,
@@ -169,13 +174,12 @@ export class AuthService {
     }
 
     user.is_activated = true;
+
     await user.save();
   }
 
   async logout(refreshToken: string) {
-    const token = await this.tokenService.removeToken(refreshToken);
-
-    return token;
+    return await this.tokenService.removeToken(refreshToken);
   }
 
   async refresh(refreshToken: string) {
@@ -209,6 +213,7 @@ export class AuthService {
 
     const userDto = new UserDto(user);
     const tokens = await this.tokenService.generateTokens({ ...userDto });
+
     await this.tokenService.saveToken(userDto.id, tokens.refresh_token);
 
     return { ...tokens, user: userDto };

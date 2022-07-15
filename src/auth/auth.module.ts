@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { JwtModule } from '@nestjs/jwt';
+import { HttpModule } from '@nestjs/axios';
+
 import { AuthController } from './auth.controller';
 import { TokenService } from '../token/token.service';
 import { AuthService } from './auth.service';
-import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../user/schemas/user.schema';
 import { Token, TokenSchema } from '../token/schemas/token.schema';
-import { JwtModule } from '@nestjs/jwt';
 import { MailService } from '../mail/mail.service';
 import { UserService } from '../user/user.service';
-import { HttpModule } from '@nestjs/axios';
 
 @Module({
   controllers: [AuthController],

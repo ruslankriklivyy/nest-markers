@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
+
 import { LayerService } from './layer.service';
 import { LayerDto } from './dto/layer.dto';
 import { LayerUpdateDto } from './dto/layer-update.dto';
@@ -34,7 +35,6 @@ export class LayerController {
   @Post('layers/create')
   create(@Body() dto: LayerDto, @Req() req: Request) {
     const { refresh_token } = req.cookies;
-
     return this.layerService.create(dto, refresh_token);
   }
 

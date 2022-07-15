@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { JwtModule } from '@nestjs/jwt';
+
 import { Marker, MarkerSchema } from './schemas/marker.schema';
 import { MarkerService } from './marker.service';
 import { MarkerController } from './marker.controller';
 import { Token, TokenSchema } from '../token/schemas/token.schema';
 import { TokenService } from '../token/token.service';
-import { JwtModule } from '@nestjs/jwt';
 import { Layer, LayerSchema } from '../layer/schemas/layer.schema';
 import { User, UserSchema } from '../user/schemas/user.schema';
 

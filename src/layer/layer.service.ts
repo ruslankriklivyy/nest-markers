@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Layer, LayerDocument } from './schemas/layer.schema';
 import { Model } from 'mongoose';
+
 import { Marker, MarkerDocument } from '../marker/schemas/marker.schema';
 import { LayerDto } from './dto/layer.dto';
 import { LayerUpdateDto } from './dto/layer-update.dto';
@@ -59,8 +60,7 @@ export class LayerService {
 
     if (!newLayer.custom_fields) delete newLayer.custom_fields;
 
-    const layer = await this.layerModel.create(newLayer);
-    return layer;
+    return this.layerModel.create(newLayer);
   }
 
   async update(id: string, layerDto: LayerUpdateDto) {
@@ -93,6 +93,7 @@ export class LayerService {
     }
 
     await this.markerModel.deleteMany({ layer: id });
+
     return layer;
   }
 }

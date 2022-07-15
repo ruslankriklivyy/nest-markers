@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Token, TokenDocument } from './schemas/token.schema';
-import { UserDto } from '../user/dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+
+import { Token, TokenDocument } from './schemas/token.schema';
+import { UserDto } from '../user/dto/user.dto';
 
 @Injectable()
 export class TokenService {
@@ -70,17 +71,6 @@ export class TokenService {
   async findRefreshToken(refreshToken: string) {
     const tokenData = await this.tokenModel.findOne({ refreshToken });
     return tokenData;
-  }
-
-  validateAccessToken(token: string) {
-    try {
-      const decodedData = this.jwt.verify(token, {
-        secret: this.configService.get('JWT_ACCESS_SECRET'),
-      });
-      return decodedData;
-    } catch (error) {
-      throw Error(error);
-    }
   }
 
   validateRefreshToken(token: string) {
