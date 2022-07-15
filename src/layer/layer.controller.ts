@@ -16,37 +16,37 @@ import { LayerDto } from './dto/layer.dto';
 import { LayerUpdateDto } from './dto/layer-update.dto';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 
-@Controller('')
+@Controller('layers')
 export class LayerController {
   constructor(private layerService: LayerService) {}
 
-  @Get('layers')
+  @Get()
   getAll(@Req() req: Request) {
     const { refresh_token } = req.cookies;
     return this.layerService.getAll(refresh_token);
   }
 
-  @Get('layers/:id')
+  @Get('/:id')
   getOne(@Param() { id }) {
     return this.layerService.getOne(id);
   }
 
   @UseGuards(JwtGuard)
-  @Post('layers/create')
-  create(@Body() dto: LayerDto, @Req() req: Request) {
+  @Post('/create')
+  createOne(@Body() dto: LayerDto, @Req() req: Request) {
     const { refresh_token } = req.cookies;
-    return this.layerService.create(dto, refresh_token);
+    return this.layerService.createOne(dto, refresh_token);
   }
 
   @UseGuards(JwtGuard)
-  @Patch('layers/:id')
-  update(@Param() { id }, @Body() dto: LayerUpdateDto) {
-    return this.layerService.update(id, dto);
+  @Patch('/:id')
+  updateOne(@Param() { id }, @Body() dto: LayerUpdateDto) {
+    return this.layerService.updateOne(id, dto);
   }
 
   @UseGuards(JwtGuard)
-  @Delete('layers/:id')
-  delete(@Param() { id }) {
-    return this.layerService.remove(id);
+  @Delete('/:id')
+  deleteOne(@Param() { id }) {
+    return this.layerService.deleteOne(id);
   }
 }

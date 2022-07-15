@@ -12,11 +12,10 @@ import { MailService } from './mail.service';
     MailerModule.forRootAsync({
       useFactory: async (config: ConfigService) => ({
         transport: {
-          host: config.get('SMTP_HOST'),
-          secure: false,
+          host: 'smtp.sendgrid.net',
           auth: {
-            user: config.get('SMPT_USER'),
-            pass: config.get('SMTP_PASSWORD'),
+            user: 'miminimalizm@gmail.com',
+            pass: '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',
           },
         },
         defaults: {

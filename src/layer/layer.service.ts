@@ -45,7 +45,7 @@ export class LayerService {
     return layer;
   }
 
-  async create(layerDto: LayerDto, refresh_token: string) {
+  async createOne(layerDto: LayerDto, refresh_token: string) {
     const { name, type } = layerDto;
 
     const user = this.tokenService.validateRefreshToken(refresh_token);
@@ -63,7 +63,7 @@ export class LayerService {
     return this.layerModel.create(newLayer);
   }
 
-  async update(id: string, layerDto: LayerUpdateDto) {
+  async updateOne(id: string, layerDto: LayerUpdateDto) {
     const layer = await this.layerModel.findByIdAndUpdate(id, layerDto);
 
     if (!layer) {
@@ -79,7 +79,7 @@ export class LayerService {
     return layer;
   }
 
-  async remove(id: string) {
+  async deleteOne(id: string) {
     const layer = await this.layerModel.findByIdAndRemove(id);
 
     if (!layer) {

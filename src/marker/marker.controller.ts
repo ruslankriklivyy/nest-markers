@@ -16,37 +16,37 @@ import { JwtGuard } from '../auth/guard/jwt.guard';
 import { MarkerDto } from './dto/marker.dto';
 import { MarkerUpdateDto } from './dto/marker-update.dto';
 
-@Controller()
+@Controller('markers')
 export class MarkerController {
   constructor(private markerService: MarkerService) {}
 
-  @Get('markers')
+  @Get()
   getAll(@Req() req: Request) {
     const { refresh_token } = req.cookies;
     return this.markerService.getAll(refresh_token);
   }
 
-  @Get('markers/:id')
+  @Get('/:id')
   getOne(@Param() { id }) {
     return this.markerService.getOne(id);
   }
 
   @UseGuards(JwtGuard)
-  @Post('markers/create')
-  create(@Body() dto: MarkerDto, @Req() req: Request) {
+  @Post('/create')
+  createOne(@Body() dto: MarkerDto, @Req() req: Request) {
     const { refresh_token } = req.cookies;
-    return this.markerService.create(dto, refresh_token);
+    return this.markerService.createOne(dto, refresh_token);
   }
 
   @UseGuards(JwtGuard)
-  @Patch('markers/:id')
-  update(@Param() { id }, @Body() dto: MarkerUpdateDto) {
-    return this.markerService.update(id, dto);
+  @Patch('/:id')
+  updateOne(@Param() { id }, @Body() dto: MarkerUpdateDto) {
+    return this.markerService.updateOne(id, dto);
   }
 
   @UseGuards(JwtGuard)
-  @Delete('markers/:id')
-  delete(@Param() { id }) {
-    return this.markerService.remove(id);
+  @Delete('/:id')
+  deleteOne(@Param() { id }) {
+    return this.markerService.deleteOne(id);
   }
 }

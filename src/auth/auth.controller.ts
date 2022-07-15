@@ -34,6 +34,7 @@ export class AuthController {
       sameSite: 'none',
       secure: true,
     });
+
     return data;
   }
 
@@ -49,6 +50,7 @@ export class AuthController {
       sameSite: 'none',
       secure: true,
     });
+
     return data;
   }
 
@@ -75,6 +77,7 @@ export class AuthController {
       sameSite: 'none',
       secure: true,
     });
+
     return data;
   }
 
@@ -82,7 +85,9 @@ export class AuthController {
   @Redirect()
   async activate(@Param() { link }) {
     const url = this.configService.get('CLIENT_URL');
+
     await this.authService.activate(link);
+
     return { url };
   }
 
@@ -92,11 +97,13 @@ export class AuthController {
     @Body() { accessToken },
   ) {
     const data = await this.authService.signInFromGoogle(accessToken);
+
     res.cookie('refresh_token', data.refresh_token, {
       maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
       sameSite: 'none',
       secure: true,
     });
+
     return data;
   }
 }

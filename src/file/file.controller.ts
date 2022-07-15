@@ -16,7 +16,7 @@ import { FileService } from './file.service';
 import { TokenService } from '../token/token.service';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 
-@Controller('')
+@Controller('files')
 export class FileController {
   constructor(
     private fileService: FileService,
@@ -24,9 +24,9 @@ export class FileController {
   ) {}
 
   @UseGuards(JwtGuard)
-  @Post('files')
+  @Post()
   @UseInterceptors(FileInterceptor('file'))
-  async create(
+  async createOne(
     @Res({ passthrough: true }) res: Response,
     @Req() req: Request,
     @UploadedFile() file: Express.Multer.File,
@@ -34,12 +34,12 @@ export class FileController {
     const { refresh_token } = req.cookies;
     const user = await this.tokenService.validateRefreshToken(refresh_token);
 
-    return this.fileService.create(file, user.id);
+    return this.fileService.createOne(file, user.id);
   }
 
   @UseGuards(JwtGuard)
-  @Delete('files/:id')
-  delete(@Param() { id }) {
-    return this.fileService.delete(id);
+  @Delete('/:id')
+  deleteOne(@Param() { id }) {
+    return this.fileService.deleteOne(id);
   }
 }

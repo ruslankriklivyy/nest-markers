@@ -52,7 +52,7 @@ export class AuthService {
       'API_URL',
     )}/api/auth/activate/${activationLink}`;
 
-    await this.mailService.sendUserConfirmation(newUser, activationUrl);
+    // await this.mailService.sendUserConfirmation(newUser, activationUrl);
 
     const newUserDto = new UserDto(newUser);
     const tokens = await this.tokenService.generateTokens(newUserDto);
@@ -129,7 +129,7 @@ export class AuthService {
               );
 
               await this.tokenService.saveToken(user._id, tokens.refresh_token);
-              await this.mailService.sendUserConfirmation(user, activationUrl);
+              // await this.mailService.sendUserConfirmation(user, activationUrl);
 
               return resolve({ ...tokens, user });
             }

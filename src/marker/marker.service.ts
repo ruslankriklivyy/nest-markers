@@ -42,7 +42,7 @@ export class MarkerService {
     return this.markerModel.findOne({ _id: id });
   }
 
-  async create(markerDto: MarkerDto, refresh_token: string) {
+  async createOne(markerDto: MarkerDto, refresh_token: string) {
     const user = await this.tokenService.validateRefreshToken(refresh_token);
     const userFromDB = await this.userModel.findOne({ email: user.email });
 
@@ -63,13 +63,13 @@ export class MarkerService {
     return this.markerModel.create(newMarker);
   }
 
-  update(id: string, newMarker: MarkerUpdateDto) {
+  updateOne(id: string, newMarker: MarkerUpdateDto) {
     return this.markerModel.findByIdAndUpdate(id, {
       $set: newMarker,
     });
   }
 
-  remove(id: string) {
+  deleteOne(id: string) {
     return this.markerModel.findByIdAndRemove(id);
   }
 }

@@ -25,7 +25,7 @@ export class UserController {
 
   @Get('users')
   getAll() {
-    return this.userService.getAllUsers();
+    return this.userService.getAll();
   }
 
   @Get('user')
@@ -35,7 +35,7 @@ export class UserController {
       refresh_token,
     );
 
-    return this.userService.getOneUser(email);
+    return this.userService.getOne(email);
   }
 
   @Patch('user/:id')

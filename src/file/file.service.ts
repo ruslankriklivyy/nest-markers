@@ -9,7 +9,7 @@ import { File, FileDocument } from './schemas/file.schema';
 export class FileService {
   constructor(@InjectModel(File.name) private fileModel: Model<FileDocument>) {}
 
-  create(file: any, userId: string, markerId?: string | null) {
+  createOne(file: any, userId: string, markerId?: string | null) {
     return new Promise((resolve, reject) =>
       cloudinary.v2.uploader
         .upload_stream({ resource_type: 'auto' }, (error, result) => {
@@ -36,7 +36,7 @@ export class FileService {
     );
   }
 
-  async delete(fileId: string) {
+  async deleteOne(fileId: string) {
     const file = await this.fileModel.findByIdAndRemove(fileId);
     const fileName = file.url.split('/').pop().split('.')[0];
 
