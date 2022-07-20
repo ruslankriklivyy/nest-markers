@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Layer, LayerDocument } from './schemas/layer.schema';
 import { Model } from 'mongoose';
 
+import { Layer, LayerDocument } from './schemas/layer.schema';
 import { Marker, MarkerDocument } from '../marker/schemas/marker.schema';
 import { LayerDto } from './dto/layer.dto';
 import { LayerUpdateDto } from './dto/layer-update.dto';
@@ -18,31 +18,45 @@ export class LayerService {
     private tokenService: TokenService,
   ) {}
 
-  async getAll(refresh_token: string) {
-    const layers = await this.layerModel.find();
+  async getAll(refresh_token: string, query: Record<string, string>) {
     const user = this.tokenService.validateRefreshToken(refresh_token);
 
     if (!user) {
-      return await this.layerModel.find({ type: 'public' });
+      return this.layerModel.find({ type: 'public' });
     }
 
-    return layers;
+    const page = +query?.page > 0 ? +query?.page : 1;
+    const limit = +query?.limit || 0;
+    const offset = +((page - 1) * limit);
+    const paging = {
+      limit,
+      offset,
+    };
+
+    const layersTotal = await this.layerModel.count();
+
+    //  TODO: add type
+    const paginationData: any = {
+      limit,
+      offset,
+      page,
+      totalDocs: layersTotal,
+      totalPages: Math.ceil(layersTotal / limit),
+    };
+    paginationData.hasNextPage =
+      paginationData.page < paginationData.totalPages;
+    paginationData.hasPrevPage = paginationData.page > 1;
+
+    const layers = await this.layerModel
+      .find()
+      .skip(paging.offset)
+      .limit(limit);
+
+    return { docs: layers, ...paginationData };
   }
 
   async getOne(id: string) {
-    const layer = await this.layerModel.findOne({ _id: id });
-
-    if (!layer) {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'Layer not found',
-        },
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    return layer;
+    return this.layerModel.findOne({ _id: id });
   }
 
   async createOne(layerDto: LayerDto, refresh_token: string) {
@@ -63,20 +77,8 @@ export class LayerService {
     return this.layerModel.create(newLayer);
   }
 
-  async updateOne(id: string, layerDto: LayerUpdateDto) {
-    const layer = await this.layerModel.findByIdAndUpdate(id, layerDto);
-
-    if (!layer) {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'Layer not found',
-        },
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    return layer;
+  updateOne(id: string, layerDto: LayerUpdateDto) {
+    return this.layerModel.findByIdAndUpdate(id, layerDto);
   }
 
   async deleteOne(id: string) {

@@ -52,6 +52,7 @@ export class AuthService {
       'API_URL',
     )}/api/auth/activate/${activationLink}`;
 
+    // TODO: send activation url to email
     // await this.mailService.sendUserConfirmation(newUser, activationUrl);
 
     const newUserDto = new UserDto(newUser);
@@ -129,6 +130,7 @@ export class AuthService {
               );
 
               await this.tokenService.saveToken(user._id, tokens.refresh_token);
+              // TODO: send activation url to email
               // await this.mailService.sendUserConfirmation(user, activationUrl);
 
               return resolve({ ...tokens, user });

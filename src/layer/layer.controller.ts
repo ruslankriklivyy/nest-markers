@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -21,9 +22,9 @@ export class LayerController {
   constructor(private layerService: LayerService) {}
 
   @Get()
-  getAll(@Req() req: Request) {
+  getAll(@Req() req: Request, @Query() query) {
     const { refresh_token } = req.cookies;
-    return this.layerService.getAll(refresh_token);
+    return this.layerService.getAll(refresh_token, query);
   }
 
   @Get('/:id')

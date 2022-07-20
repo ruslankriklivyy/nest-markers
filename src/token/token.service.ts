@@ -63,22 +63,19 @@ export class TokenService {
     });
   }
 
-  async removeToken(refreshToken: string) {
-    const tokenData = await this.tokenModel.deleteOne({ refreshToken });
-    return tokenData;
+  removeToken(refreshToken: string) {
+    return this.tokenModel.deleteOne({ refreshToken });
   }
 
-  async findRefreshToken(refreshToken: string) {
-    const tokenData = await this.tokenModel.findOne({ refreshToken });
-    return tokenData;
+  findRefreshToken(refreshToken: string) {
+    return this.tokenModel.findOne({ refreshToken });
   }
 
   validateRefreshToken(token: string) {
     try {
-      const decodedData = this.jwt.verify(token, {
+      return this.jwt.verify(token, {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
       });
-      return decodedData;
     } catch (error) {
       return null;
     }

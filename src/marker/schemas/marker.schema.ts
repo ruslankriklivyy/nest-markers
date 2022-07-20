@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
+
 import { CustomField, Layer } from '../../layer/schemas/layer.schema';
 import { User } from '../../user/schemas/user.schema';
 
@@ -26,7 +27,7 @@ export class Marker {
       url: { type: String },
     }),
   )
-  preview: { type: Object };
+  preview: { type: object };
 
   @Prop(
     raw({
@@ -34,7 +35,7 @@ export class Marker {
       lng: { type: Number, required: true },
     }),
   )
-  location: { type: Object; required: true };
+  location: { type: object; required: true };
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Layer' })
   layer: Layer;
