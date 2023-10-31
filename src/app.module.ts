@@ -1,21 +1,20 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
 
-import { TokenModule } from './token/token.module';
-import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
-import { MarkerModule } from './marker/marker.module';
-import { FileModule } from './file/file.module';
-import { LayerModule } from './layer/layer.module';
-import { MailModule } from './mail/mail.module';
+import { TokenModule } from '@/modules/token/token.module';
+import { UserModule } from '@/modules/user/user.module';
+import { AuthModule } from '@/modules/auth/auth.module';
+import { MarkerModule } from '@/modules/marker/marker.module';
+import { FileModule } from '@/modules/file/file.module';
+import { LayerModule } from '@/modules/layer/layer.module';
+import { MailModule } from '@/modules/mail/mail.module';
+import { CustomFieldModule } from '@/modules/custom-field/custom-field.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.DB_URL),
     TokenModule,
     UserModule,
     AuthModule,
@@ -23,6 +22,7 @@ import { MailModule } from './mail/mail.module';
     FileModule,
     LayerModule,
     MailModule,
+    CustomFieldModule,
   ],
 })
 export class AppModule {}
