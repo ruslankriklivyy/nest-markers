@@ -1,6 +1,6 @@
-import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+
 import { MainEntity } from '@/modules/database/entities/main.entity';
-import { PolymorphicChildren } from 'typeorm-polymorphic';
 import { File } from '@/modules/file/entities/file.entity';
 import { User } from '@/modules/user/entities/user.entity';
 import { Layer } from '@/modules/layer/entities/layer.entity';
@@ -16,7 +16,8 @@ export class Marker extends MainEntity {
   @Column({ type: 'varchar' })
   description: string;
 
-  @PolymorphicChildren(() => File, { eager: false })
+  @OneToMany(() => File, (file) => file.entity_id)
+  @JoinColumn({ name: 'images' })
   images: File[];
 
   @Column({ type: 'float' })

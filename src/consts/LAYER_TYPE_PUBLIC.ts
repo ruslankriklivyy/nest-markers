@@ -1,1 +1,4 @@
-export const LAYER_TYPE_PUBLIC = 'public';
+export enum LAYER_TYPE {
+  Public = 'public',
+  Private = 'private',
+}

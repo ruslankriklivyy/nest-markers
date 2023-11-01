@@ -3,7 +3,6 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
-import { UserDto } from '@/modules/user/dto/user.dto';
 import { Token } from '@/modules/token/entities/token.entity';
 import { CreateUserDto } from '@/modules/user/dto/create-user.dto';
 
@@ -15,16 +14,16 @@ export class TokenService {
     private configService: ConfigService,
   ) {}
 
-  async generateTokens(user: UserDto) {
-    const payload = { ...user, id: user.id.toString() };
+  async generateTokens(user: any) {
+    const payload = { ...user, id: user.id };
 
     const access_token = await this.jwt.signAsync(payload, {
-      expiresIn: this.configService.get('JWT_ACCESS_TOKEN_EXPIRES_IN'),
-      secret: this.configService.get('JWT_ACCESS_SECRET'),
+      expiresIn: this.configService.get('JWT_ACCESS_TOKEN_EXPIRE'),
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
     });
     const refresh_token = await this.jwt.signAsync(payload, {
-      expiresIn: this.configService.get('JWT_REFRESH_TOKEN_EXPIRES_IN'),
-      secret: this.configService.get('JWT_REFRESH_SECRET'),
+      expiresIn: this.configService.get('JWT_REFRESH_TOKEN_EXPIRE'),
+      secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
     });
 
     return {
@@ -35,12 +34,12 @@ export class TokenService {
 
   async generateTokensFromGoogle(payload: CreateUserDto) {
     const access_token = await this.jwt.signAsync(payload, {
-      expiresIn: this.configService.get('JWT_ACCESS_TOKEN_EXPIRES_IN'),
-      secret: this.configService.get('JWT_ACCESS_SECRET'),
+      expiresIn: this.configService.get('JWT_ACCESS_TOKEN_EXPIRE'),
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
     });
     const refresh_token = await this.jwt.signAsync(payload, {
-      expiresIn: this.configService.get('JWT_REFRESH_TOKEN_EXPIRES_IN'),
-      secret: this.configService.get('JWT_REFRESH_SECRET'),
+      expiresIn: this.configService.get('JWT_REFRESH_TOKEN_EXPIRE'),
+      secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
     });
 
     return {
@@ -76,7 +75,7 @@ export class TokenService {
   validateRefreshToken(token: string) {
     try {
       return this.jwt.verify(token, {
-        secret: this.configService.get('JWT_REFRESH_SECRET'),
+        secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
       });
     } catch (error) {
       return null;

@@ -5,8 +5,8 @@ import { CreateLayerDto } from './dto/create-layer.dto';
 import { UpdateLayerDto } from './dto/update-layer.dto';
 import { TokenService } from '../token/token.service';
 import { Layer } from '@/modules/layer/entities/layer.entity';
-import { LAYER_TYPE_PUBLIC } from '@/consts/LAYER_TYPE_PUBLIC';
 import { UserService } from '@/modules/user/user.service';
+import { LAYER_TYPE } from '@/consts/LAYER_TYPE_PUBLIC';
 
 @Injectable()
 export class LayerService {
@@ -20,7 +20,7 @@ export class LayerService {
     const user = this.tokenService.validateRefreshToken(refreshToken);
 
     if (!user) {
-      return this.layerRepository.findOneBy({ type: LAYER_TYPE_PUBLIC });
+      return this.layerRepository.findOneBy({ type: LAYER_TYPE.Public });
     }
 
     return this.layerRepository.find();

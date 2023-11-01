@@ -3,17 +3,15 @@ import { MainEntity } from '@/modules/database/entities/main.entity';
 import { User } from '@/modules/user/entities/user.entity';
 import { Marker } from '@/modules/marker/entities/marker.entity';
 import { CustomField } from '@/modules/custom-field/entities/custom-field.entity';
-import { LAYER_TYPE_PUBLIC } from '@/consts/LAYER_TYPE_PUBLIC';
-
-export type LayerType = 'public' | 'private';
+import { LAYER_TYPE } from '@/consts/LAYER_TYPE_PUBLIC';
 
 @Entity({ name: 'layers' })
 export class Layer extends MainEntity {
   @Column({ type: 'varchar', length: 80 })
   name: string;
 
-  @Column({ type: 'enum', enum: LAYER_TYPE_PUBLIC })
-  type: LayerType;
+  @Column({ type: 'enum', enum: LAYER_TYPE, default: LAYER_TYPE.Public })
+  type: LAYER_TYPE;
 
   @OneToMany(() => Marker, (marker) => marker.layer, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'markers' })

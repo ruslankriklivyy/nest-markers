@@ -1,10 +1,9 @@
-import { Column } from 'typeorm';
-import { PolymorphicParent } from 'typeorm-polymorphic';
+import { Column, Entity } from 'typeorm';
 
 import { MainEntity } from '@/modules/database/entities/main.entity';
-import { User } from '@/modules/user/entities/user.entity';
-import { Marker } from '@/modules/marker/entities/marker.entity';
+import { FILE_ENTITY_TYPES } from '@/consts/FILE_ENTITY_TYPES';
 
+@Entity({ name: 'files' })
 export class File extends MainEntity {
   @Column({ type: 'varchar', length: 80 })
   filename: string;
@@ -18,12 +17,14 @@ export class File extends MainEntity {
   @Column({ type: 'float' })
   size: number;
 
-  @PolymorphicParent(() => [User, Marker])
-  owner: User | Marker;
+  @Column({ name: 'entity_id', nullable: true })
+  entity_id: number | null;
 
-  @Column({ name: 'entity_id' })
-  entity_id: number;
-
-  @Column({ name: 'entity_type' })
-  entity_type: string;
+  @Column({
+    name: 'entity_type',
+    enum: FILE_ENTITY_TYPES,
+    default: null,
+    nullable: true,
+  })
+  entity_type: FILE_ENTITY_TYPES | null;
 }

@@ -1,12 +1,5 @@
-import { IsBoolean, IsEmail, IsInt, IsNotEmpty } from 'class-validator';
 import { User } from '@/modules/user/entities/user.entity';
-
-interface IUserModel {
-  full_name: string;
-  email: string;
-  id: number;
-  is_activated: boolean;
-}
+import { UpdateUserDto } from '@/modules/user/dto/user-update.dto';
 
 export interface IUserAuth {
   user: User;
@@ -15,22 +8,15 @@ export interface IUserAuth {
 }
 
 export class UserDto {
-  @IsNotEmpty()
-  full_name: string;
-
-  @IsEmail()
-  email: string;
-
-  @IsInt()
-  id: number;
-
-  @IsBoolean()
-  is_activated: boolean;
-
-  constructor(model: IUserModel) {
-    this.full_name = model.full_name;
-    this.email = model.email;
-    this.id = model.id;
-    this.is_activated = model.is_activated;
+  constructor(user: UpdateUserDto) {
+    this.full_name = user.full_name;
+    this.email = user.email;
+    this.is_activated = user.is_activated;
+    this.avatar = { id: user.avatar_id };
   }
+
+  full_name: string;
+  email: string;
+  is_activated: boolean;
+  avatar?: { id: number } | null;
 }

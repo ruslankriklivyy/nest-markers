@@ -1,15 +1,13 @@
 import { DataSourceOptions, DataSource } from 'typeorm';
 import { config } from 'dotenv';
 import { ConfigService } from '@nestjs/config';
-import { join } from 'path';
 import { SeederOptions } from 'typeorm-extension';
-
-import InitialDatabaseSeed from './seeding/seeds/initial.seed';
-import { User } from '@/modules/user/entities/user.entity';
 
 config();
 
 const configService = new ConfigService();
+
+console.log(__dirname + '/modules/**/*.entity.{js,ts}');
 
 export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   type: 'postgres',
@@ -17,12 +15,14 @@ export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   port: +configService.get('DB_PORT'),
   password: configService.get('DB_PASSWORD'),
   username: configService.get('DB_USERNAME'),
-  entities: [User],
-  migrations: [join(__dirname, './migrations/*.{ts,js}')],
-  seeds: [InitialDatabaseSeed],
-  factories: [],
+  entities: ['dist/modules/**/*.entity.{js,ts}'],
+  migrations: ['dist/modules/database/migrations/*{js,ts}'],
+  migrationsTableName: 'migrations',
+  seeds: ['dist/modules/database/seeding/seeds/*.seed.{js,ts}'],
+  factories: ['dist/modules/database/seeding/factories/*.factory.{js,ts}'],
   database: configService.get('DB_NAME'),
   synchronize: false,
+  migrationsRun: false,
   logging: true,
 };
 

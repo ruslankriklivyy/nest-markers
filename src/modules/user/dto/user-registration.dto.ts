@@ -1,12 +1,37 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import {
+  IsEmail,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class UserRegistrationDto {
+  constructor(
+    email: string,
+    full_name: string,
+    password: string,
+    avatar_id?: number | null,
+  ) {
+    this.avatar_id = avatar_id || null;
+    this.email = email;
+    this.full_name = full_name;
+    this.password = password;
+  }
+
   @IsNotEmpty()
-  readonly full_name: string;
+  @IsString()
+  full_name: string;
 
   @IsEmail()
-  readonly email: string;
+  @IsString()
+  email: string;
 
   @IsNotEmpty()
-  readonly password: string;
+  @IsString()
+  password: string;
+
+  @IsOptional()
+  @IsInt()
+  avatar_id?: number | null;
 }

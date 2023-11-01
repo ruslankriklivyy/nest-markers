@@ -1,11 +1,15 @@
 import * as cloudinary from 'cloudinary';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
 
-import { FileRepository } from '@/modules/file/file.repository';
+import { File } from '@/modules/file/entities/file.entity';
+import { FILE_ENTITY_TYPES } from '@/consts/FILE_ENTITY_TYPES';
 
 @Injectable()
 export class FileService {
-  constructor(@Inject(FileRepository) private fileRepository: FileRepository) {}
+  constructor(
+    @Inject('FILE_REPOSITORY') private fileRepository: Repository<File>,
+  ) {}
 
   createOne(file: Express.Multer.File) {
     return new Promise((resolve, reject) =>
@@ -15,15 +19,13 @@ export class FileService {
             return reject('File not uploaded');
           }
 
-          const fileData = {
-            filename: result.original_filename,
+          const newFile = this.fileRepository.create({
+            filename: file.originalname,
             size: result.bytes,
             type: result.format,
             url: result.url,
-            owner: null,
-          };
-
-          const uploadFile = this.fileRepository.create(fileData);
+          });
+          const uploadFile = this.fileRepository.save(newFile);
 
           resolve(uploadFile);
         })
@@ -56,5 +58,12 @@ export class FileService {
     );
 
     return this.fileRepository.delete({ id: fileId });
+  }
+
+  attach(fileId: number, entityId: number, entityType: FILE_ENTITY_TYPES) {
+    return this.fileRepository.update(
+      { id: fileId },
+      { entity_id: entityId, entity_type: entityType },
+    );
   }
 }

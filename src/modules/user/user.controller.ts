@@ -2,44 +2,42 @@ import {
   Controller,
   Get,
   Req,
-  Res,
-  Patch,
   Param,
   UseGuards,
   Body,
+  Put,
 } from '@nestjs/common';
-import { Response, Request } from 'express';
+import { Request } from 'express';
 
 import { UserService } from './user.service';
-import { JwtGuard } from '../auth/guard/jwt.guard';
-import { TokenService } from '../token/token.service';
-import { UserUpdateDto } from './dto/user-update.dto';
+import { JwtGuard } from '@/modules/auth/guard/jwt.guard';
+import { TokenService } from '@/modules/token/token.service';
+import { UpdateUserDto } from '@/modules/user/dto/user-update.dto';
 
 @UseGuards(JwtGuard)
-@Controller()
+@Controller('users')
 export class UserController {
   constructor(
     private userService: UserService,
     private tokenService: TokenService,
   ) {}
 
-  @Get('users')
+  @Get()
   getAll() {
     return this.userService.getAll();
   }
 
-  @Get('user')
-  async getOne(@Res({ passthrough: true }) res: Response, @Req() req: Request) {
+  @Get('current')
+  async getOne(@Req() req: Request) {
     const { refresh_token } = req.cookies;
-    const { email } = await this.tokenService.validateRefreshToken(
-      refresh_token,
-    );
+    const { email } =
+      await this.tokenService.validateRefreshToken(refresh_token);
 
     return this.userService.getOne(email);
   }
 
-  @Patch('user/:id')
-  async updateOne(@Param() { id }, @Body() dto: UserUpdateDto) {
+  @Put(':id')
+  updateOne(@Param() { id }, @Body() dto: UpdateUserDto) {
     return this.userService.updateOne(id, dto);
   }
 }

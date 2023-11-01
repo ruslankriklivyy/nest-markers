@@ -1,6 +1,7 @@
 import {
   IsBoolean,
   IsEmail,
+  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -21,4 +22,8 @@ export class CreateUserDto {
 
   @IsBoolean()
   is_activated: boolean;
+
+  @IsInt()
+  @IsOptional()
+  avatar_id?: number | null;
 }

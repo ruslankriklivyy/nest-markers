@@ -1,5 +1,11 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { PolymorphicChildren } from 'typeorm-polymorphic';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { File } from '@/modules/file/entities/file.entity';
 
@@ -8,8 +14,9 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @PolymorphicChildren(() => File, { eager: true })
-  avatar?: File;
+  @OneToOne(() => File, (file) => file.entity_id)
+  @JoinColumn({ name: 'avatar_id' })
+  avatar: File;
 
   @Column({ type: 'varchar', name: 'full_name', length: 120 })
   full_name: string;
@@ -18,7 +25,7 @@ export class User extends BaseEntity {
   email: string;
 
   @Column({ type: 'varchar', length: 80 })
-  password?: string;
+  password: string;
 
   @Column({ type: 'boolean', name: 'is_activated', default: false })
   is_activated: boolean;

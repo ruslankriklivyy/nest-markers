@@ -19,15 +19,16 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "orm": "ts-node ./node_modules/typeorm/cli",
-    "orm:run-migrations": "npm run typeorm migration:run -- -d src/db/orm.config.ts",
-    "orm:generate-migration": "cross-var npm run typeorm -- -d src/db/orm.config.ts migration:generate ./src/db/migrations/$npm_config_name",
-    "orm:create-migration": "cross-var npm run typeorm -- migration:create ./src/db/migrations/$npm_config_name",
-    "orm:revert-migration": "npm run typeorm -- -d src/db/orm.config.ts migration:revert",
-    "db:drop": "ts-node src/db/refresh-db.ts",
-    "seed:run": "ts-node src/db/seeds-run.ts"
+    "orm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli",
+    "orm:run-migrations": "npm run orm migration:run -- -d dist/modules/database/database.config.js",
+    "orm:generate-migration": "cross-var npm run orm -- -d dist/modules/database/database.config.js migration:generate ./src/modules/database/migrations/$npm_config_name",
+    "orm:create-migration": "cross-var npm run orm -- migration:create ./src/db/migrations/$npm_config_name",
+    "orm:revert-migration": "npm run orm -- -d src/modules/database/database.config.js migration:revert",
+    "db:drop": "ts-node -r tsconfig-paths/register dist/modules/database/refresh-db.js",
+    "seed:run": "ts-node -r tsconfig-paths/register dist/modules/database/seeds-run.js"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.2.0",
     "@nestjs-modules/mailer": "^1.7.1",
     "@nestjs/axios": "^3.0.1",
     "@nestjs/common": "^10.2.7",
@@ -37,6 +38,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.2.7",
+    "@nestjs/typeorm": "^10.0.0",
     "@sendgrid/mail": "^7.7.0",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
@@ -54,7 +56,6 @@
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.17",
     "typeorm-extension": "^3.1.1",
-    "typeorm-polymorphic": "^1.0.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { LayerType } from '@/modules/layer/entities/layer.entity';
+import { LAYER_TYPE } from '@/consts/LAYER_TYPE_PUBLIC';
 
 export class CreateLayerDto {
   @IsNotEmpty()
@@ -8,5 +8,5 @@ export class CreateLayerDto {
 
   @IsNotEmpty()
   @IsString()
-  type: LayerType;
+  type: LAYER_TYPE;
 }

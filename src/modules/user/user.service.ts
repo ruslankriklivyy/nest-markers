@@ -1,22 +1,43 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { UserUpdateDto } from './dto/user-update.dto';
+import { UpdateUserDto } from './dto/user-update.dto';
 import { User } from '@/modules/user/entities/user.entity';
 import { CreateUserDto } from '@/modules/user/dto/create-user.dto';
+import { FileService } from '@/modules/file/file.service';
+import { FILE_ENTITY_TYPES } from '@/consts/FILE_ENTITY_TYPES';
+import { UserDto } from '@/modules/user/dto/user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @Inject('USER_REPOSITORY') private userRepository: Repository<User>,
+    private fileService: FileService,
   ) {}
 
   getAll() {
-    return this.userRepository.find({});
+    return this.userRepository.find({ relations: { avatar: true } });
   }
 
-  create(dto: CreateUserDto) {
-    return this.userRepository.create(dto);
+  async create(dto: CreateUserDto) {
+    const user = this.userRepository.create({
+      full_name: dto.full_name,
+      email: dto.email,
+      password: dto.password,
+      is_activated: dto.is_activated,
+    });
+
+    if (dto.avatar_id) {
+      await this.fileService.attach(
+        dto.avatar_id,
+        user.id,
+        FILE_ENTITY_TYPES.User,
+      );
+    }
+
+    await user.save();
+
+    return user;
   }
 
   getById(id: number) {
@@ -27,7 +48,13 @@ export class UserService {
     return this.userRepository.findOneBy({ email });
   }
 
-  updateOne(id: number, dto: UserUpdateDto) {
-    return this.userRepository.update({ id }, dto);
+  async updateOne(id: number, dto: UpdateUserDto) {
+    if (dto.avatar_id) {
+      await this.fileService.attach(dto.avatar_id, id, FILE_ENTITY_TYPES.User);
+    }
+
+    const userDto = new UserDto(dto);
+
+    return this.userRepository.update({ id }, userDto);
   }
 }

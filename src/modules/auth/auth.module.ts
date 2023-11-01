@@ -10,6 +10,8 @@ import { UserService } from '../user/user.service';
 import { DatabaseModule } from '@/modules/database/database.module';
 import { tokenProviders } from '@/modules/token/token.providers';
 import { userProviders } from '@/modules/user/user.providers';
+import { fileProviders } from '@/modules/file/file.providers';
+import { FileService } from '@/modules/file/file.service';
 
 @Module({
   controllers: [AuthController],
@@ -18,8 +20,10 @@ import { userProviders } from '@/modules/user/user.providers';
     TokenService,
     MailService,
     UserService,
+    FileService,
     ...tokenProviders,
     ...userProviders,
+    ...fileProviders,
   ],
   imports: [
     HttpModule.register({

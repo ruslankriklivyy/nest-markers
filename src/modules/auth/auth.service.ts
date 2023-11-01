@@ -1,13 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import * as uuid from 'uuid';
+// import * as uuid from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 
 import { TokenService } from '../token/token.service';
 import { UserRegistrationDto } from '../user/dto/user-registration.dto';
-import { IUserAuth, UserDto } from '../user/dto/user.dto';
+import { IUserAuth } from '../user/dto/user.dto';
 import { UserLoginDto } from '../user/dto/user-login.dto';
 import { UserService } from '@/modules/user/user.service';
 import { CreateUserDto } from '@/modules/user/dto/create-user.dto';
@@ -22,7 +22,7 @@ export class AuthService {
   ) {}
 
   async registration(userDto: UserRegistrationDto) {
-    const { full_name, email, password } = userDto;
+    const { full_name, email, password, avatar_id } = userDto;
     const user = await this.userService.getOne(email);
 
     if (user) {
@@ -38,9 +38,10 @@ export class AuthService {
     // const activationLink = uuid.v4();
     const hashPassword = await bcrypt.hash(password, 3);
 
-    const newUser = this.userService.create({
+    const newUser = await this.userService.create({
       full_name,
       email,
+      avatar_id,
       password: hashPassword,
       is_activated: false,
     });
@@ -52,12 +53,11 @@ export class AuthService {
     // TODO: send activation url to email
     // await this.mailService.sendUserConfirmation(newUser, activationUrl);
 
-    const newUserDto = new UserDto(newUser);
-    const tokens = await this.tokenService.generateTokens(newUserDto);
+    const tokens = await this.tokenService.generateTokens(newUser);
 
-    await this.tokenService.saveToken(newUserDto.id, tokens.refresh_token);
+    await this.tokenService.saveToken(newUser.id, tokens.refresh_token);
 
-    return { ...tokens, user: newUserDto };
+    return { ...tokens, user: newUser };
   }
 
   async login(userDto: UserLoginDto) {
@@ -74,7 +74,9 @@ export class AuthService {
       );
     }
 
-    const isPasswordEquals = bcrypt.compare(password, user.password);
+    console.log('USER', user);
+
+    const isPasswordEquals = await bcrypt.compare(password, user.password);
 
     if (!isPasswordEquals) {
       throw new HttpException(
@@ -86,12 +88,11 @@ export class AuthService {
       );
     }
 
-    const newUserDto = new UserDto(user);
-    const tokens = await this.tokenService.generateTokens({ ...newUserDto });
+    const tokens = await this.tokenService.generateTokens({ ...user });
 
-    await this.tokenService.saveToken(newUserDto.id, tokens.refresh_token);
+    await this.tokenService.saveToken(user.id, tokens.refresh_token);
 
-    return { ...tokens, user: newUserDto };
+    return { ...tokens, user: user };
   }
 
   async signInFromGoogle(accessToken: string): Promise<IUserAuth> {
@@ -103,7 +104,7 @@ export class AuthService {
 
     const userFromBD = await this.userService.getOne(data.email);
 
-    const activationLink = uuid.v4();
+    // const activationLink = uuid.v4();
 
     const newUser: CreateUserDto = {
       full_name: data.name,
@@ -111,12 +112,12 @@ export class AuthService {
       is_activated: false,
     };
 
-    const activationUrl = `${this.configService.get(
-      'API_URL',
-    )}/api/auth/activate/${activationLink}`;
+    // const activationUrl = `${this.configService.get(
+    //   'API_URL',
+    // )}/api/auth/activate/${activationLink}`;
 
     if (!userFromBD) {
-      const user = this.userService.create(newUser);
+      const user = await this.userService.create(newUser);
       const tokens = await this.tokenService.generateTokensFromGoogle(newUser);
 
       await this.tokenService.saveToken(user.id, tokens.refresh_token);
@@ -166,9 +167,8 @@ export class AuthService {
       );
     }
 
-    const decodedData = (await this.tokenService.validateRefreshToken(
-      refreshToken,
-    )) as UserDto;
+    const decodedData =
+      await this.tokenService.validateRefreshToken(refreshToken);
     const user = await this.userService.getOne(decodedData.email);
     const token = await this.tokenService.findRefreshToken(refreshToken);
 
@@ -182,11 +182,10 @@ export class AuthService {
       );
     }
 
-    const userDto = new UserDto(user);
-    const tokens = await this.tokenService.generateTokens({ ...userDto });
+    const tokens = await this.tokenService.generateTokens({ ...user });
 
-    await this.tokenService.saveToken(userDto.id, tokens.refresh_token);
+    await this.tokenService.saveToken(user.id, tokens.refresh_token);
 
-    return { ...tokens, user: userDto };
+    return { ...tokens, user };
   }
 }
