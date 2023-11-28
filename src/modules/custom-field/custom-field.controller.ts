@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { CustomFieldService } from './custom-field.service';
 import { CreateCustomFieldDto } from './dto/create-custom-field.dto';
 import { UpdateCustomFieldDto } from './dto/update-custom-field.dto';
@@ -23,7 +31,10 @@ export class CustomFieldController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCustomFieldDto: UpdateCustomFieldDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateCustomFieldDto: UpdateCustomFieldDto,
+  ) {
     return this.customFieldService.update(+id, updateCustomFieldDto);
   }
 

@@ -58,7 +58,7 @@ export class TokenService {
       return tokenData.save();
     }
 
-    return this.tokenRepository.create({
+    return this.tokenRepository.save({
       user: { id: userId },
       refresh_token: refreshToken,
     });
@@ -70,6 +70,12 @@ export class TokenService {
 
   findRefreshToken(refreshToken: string) {
     return this.tokenRepository.findOneBy({ refresh_token: refreshToken });
+  }
+
+  validateAccessToken(token: string) {
+    return this.jwt.verifyAsync(token, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
+    });
   }
 
   validateRefreshToken(token: string) {

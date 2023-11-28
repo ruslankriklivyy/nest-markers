@@ -10,21 +10,20 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { FileService } from './file.service';
-import { JwtGuard } from '../auth/guard/jwt.guard';
+import { AuthGuard } from '../auth/guard/auth.guard';
 
 @Controller('files')
 export class FileController {
   constructor(private fileService: FileService) {}
 
-  @UseGuards(JwtGuard)
+  @UseGuards(AuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  async createOne(@UploadedFile() file: Express.Multer.File) {
-    console.log('FILE', file);
+  createOne(@UploadedFile() file: Express.Multer.File) {
     return this.fileService.createOne(file);
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(AuthGuard)
   @Delete('/:id')
   deleteOne(@Param() { id }) {
     return this.fileService.deleteOne(id);

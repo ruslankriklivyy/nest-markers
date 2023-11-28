@@ -9,6 +9,11 @@ import { FileModule } from '@/modules/file/file.module';
 import { LayerModule } from '@/modules/layer/layer.module';
 import { MailModule } from '@/modules/mail/mail.module';
 import { CustomFieldModule } from '@/modules/custom-field/custom-field.module';
+import { IsOwnerConstraint } from '@/validation/is-owner.validation';
+import { DatabaseModule } from '@/modules/database/database.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { dataSourceOptions } from '@/modules/database/database.config';
+import { AuthGuard } from '@/modules/auth/guard/auth.guard';
 
 @Module({
   imports: [
@@ -23,6 +28,9 @@ import { CustomFieldModule } from '@/modules/custom-field/custom-field.module';
     LayerModule,
     MailModule,
     CustomFieldModule,
+    DatabaseModule,
+    TypeOrmModule.forRoot(dataSourceOptions),
   ],
+  providers: [IsOwnerConstraint],
 })
 export class AppModule {}

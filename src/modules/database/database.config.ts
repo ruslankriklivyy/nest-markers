@@ -7,8 +7,6 @@ config();
 
 const configService = new ConfigService();
 
-console.log(__dirname + '/modules/**/*.entity.{js,ts}');
-
 export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   type: 'postgres',
   host: configService.get('DB_HOST'),

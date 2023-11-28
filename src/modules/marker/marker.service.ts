@@ -19,7 +19,7 @@ export class MarkerService {
     return this.markerRepository.findOneBy({ id });
   }
 
-  async createOne(userId: number, markerDto: MarkerDto) {
+  createOne(userId: number, markerDto: MarkerDto) {
     return this.markerRepository.create({ user: { id: userId }, ...markerDto });
   }
 

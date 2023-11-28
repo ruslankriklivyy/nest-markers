@@ -1,7 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-// import * as uuid from 'uuid';
-import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 
@@ -18,7 +16,6 @@ export class AuthService {
     private userService: UserService,
     private httpService: HttpService,
     private tokenService: TokenService,
-    private configService: ConfigService,
   ) {}
 
   async registration(userDto: UserRegistrationDto) {
@@ -35,7 +32,6 @@ export class AuthService {
       );
     }
 
-    // const activationLink = uuid.v4();
     const hashPassword = await bcrypt.hash(password, 3);
 
     const newUser = await this.userService.create({
@@ -45,13 +41,6 @@ export class AuthService {
       password: hashPassword,
       is_activated: false,
     });
-
-    // const activationUrl = `${this.configService.get(
-    //   'API_URL',
-    // )}/api/auth/activate/${activationLink}`;
-
-    // TODO: send activation url to email
-    // await this.mailService.sendUserConfirmation(newUser, activationUrl);
 
     const tokens = await this.tokenService.generateTokens(newUser);
 
@@ -73,8 +62,6 @@ export class AuthService {
         HttpStatus.NOT_FOUND,
       );
     }
-
-    console.log('USER', user);
 
     const isPasswordEquals = await bcrypt.compare(password, user.password);
 
@@ -104,25 +91,17 @@ export class AuthService {
 
     const userFromBD = await this.userService.getOne(data.email);
 
-    // const activationLink = uuid.v4();
-
     const newUser: CreateUserDto = {
       full_name: data.name,
       email: data.email,
       is_activated: false,
     };
 
-    // const activationUrl = `${this.configService.get(
-    //   'API_URL',
-    // )}/api/auth/activate/${activationLink}`;
-
     if (!userFromBD) {
       const user = await this.userService.create(newUser);
       const tokens = await this.tokenService.generateTokensFromGoogle(newUser);
 
       await this.tokenService.saveToken(user.id, tokens.refresh_token);
-      // TODO: send activation url to email
-      // await this.mailService.sendUserConfirmation(user, activationUrl);
 
       return { ...tokens, user };
     }
@@ -131,26 +110,6 @@ export class AuthService {
 
     await this.tokenService.saveToken(userFromBD.id, tokens.refresh_token);
   }
-
-  // async activate(activationLink: string) {
-  //   const user = await this.userModel.findOne({
-  //     activation_link: activationLink,
-  //   });
-  //
-  //   if (!user) {
-  //     throw new HttpException(
-  //       {
-  //         status: HttpStatus.BAD_REQUEST,
-  //         error: 'Incorrect activation link',
-  //       },
-  //       HttpStatus.BAD_REQUEST,
-  //     );
-  //   }
-  //
-  //   user.is_activated = true;
-  //
-  //   await user.save();
-  // }
 
   async logout(refreshToken: string) {
     return await this.tokenService.removeToken(refreshToken);

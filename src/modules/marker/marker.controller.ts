@@ -12,11 +12,11 @@ import {
 import { Request } from 'express';
 
 import { MarkerService } from './marker.service';
-import { JwtGuard } from '../auth/guard/jwt.guard';
 import { MarkerDto } from './dto/marker.dto';
 import { UpdateMarkerDto } from '@/modules/marker/dto/update-marker.dto';
 import { CurrentUser } from '@/decorators/current-user.decorator';
 import { User } from '@/modules/user/entities/user.entity';
+import { AuthGuard } from '@/modules/auth/guard/auth.guard';
 
 @Controller('markers')
 export class MarkerController {
@@ -33,13 +33,13 @@ export class MarkerController {
     return this.markerService.getOne(id);
   }
 
-  @UseGuards(JwtGuard)
-  @Post('/create')
+  @UseGuards(AuthGuard)
+  @Post()
   createOne(@Body() dto: MarkerDto, @CurrentUser() user: User) {
     return this.markerService.createOne(user.id, dto);
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(AuthGuard)
   @Patch('/:id')
   updateOne(
     @Param() { id },
@@ -49,7 +49,7 @@ export class MarkerController {
     return this.markerService.updateOne(id, user.id, dto);
   }
 
-  @UseGuards(JwtGuard)
+  @UseGuards(AuthGuard)
   @Delete('/:id')
   deleteOne(@Param() { id }) {
     return this.markerService.deleteOne(id);

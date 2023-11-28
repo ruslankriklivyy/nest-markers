@@ -10,11 +10,11 @@ import {
 import { Request } from 'express';
 
 import { UserService } from './user.service';
-import { JwtGuard } from '@/modules/auth/guard/jwt.guard';
 import { TokenService } from '@/modules/token/token.service';
 import { UpdateUserDto } from '@/modules/user/dto/user-update.dto';
+import { AuthGuard } from '@/modules/auth/guard/auth.guard';
 
-@UseGuards(JwtGuard)
+@UseGuards(AuthGuard)
 @Controller('users')
 export class UserController {
   constructor(
