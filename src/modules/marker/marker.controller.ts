@@ -7,25 +7,22 @@ import {
   Post,
   Patch,
   UseGuards,
-  Req,
 } from '@nestjs/common';
-import { Request } from 'express';
 
 import { MarkerService } from './marker.service';
-import { MarkerDto } from './dto/marker.dto';
+import { CreateMarkerDto } from './dto/create-marker.dto';
 import { UpdateMarkerDto } from '@/modules/marker/dto/update-marker.dto';
 import { CurrentUser } from '@/decorators/current-user.decorator';
 import { User } from '@/modules/user/entities/user.entity';
-import { AuthGuard } from '@/modules/auth/guard/auth.guard';
+import { JwtAuthGuard } from '@/modules/auth/guard/jwt-auth.guard';
 
 @Controller('markers')
 export class MarkerController {
   constructor(private markerService: MarkerService) {}
 
   @Get()
-  getAll(@Req() req: Request) {
-    const { refresh_token } = req.cookies;
-    return this.markerService.getAll(refresh_token);
+  getAll() {
+    return this.markerService.getAll(['layer', 'images']);
   }
 
   @Get('/:id')
@@ -33,25 +30,25 @@ export class MarkerController {
     return this.markerService.getOne(id);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
-  createOne(@Body() dto: MarkerDto, @CurrentUser() user: User) {
-    return this.markerService.createOne(user.id, dto);
+  createOne(@Body() dto: CreateMarkerDto, @CurrentUser() user: User) {
+    return this.markerService.createOne(user, dto);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch('/:id')
   updateOne(
-    @Param() { id },
-    @Body() dto: UpdateMarkerDto,
+    @Param('id') id: number,
     @CurrentUser() user: User,
+    @Body() markerDto: UpdateMarkerDto,
   ) {
-    return this.markerService.updateOne(id, user.id, dto);
+    return this.markerService.updateOne(id, user.id, markerDto);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete('/:id')
-  deleteOne(@Param() { id }) {
-    return this.markerService.deleteOne(id);
+  deleteOne(@Param() { id }, @CurrentUser() user: User) {
+    return this.markerService.deleteOne(id, user.id);
   }
 }

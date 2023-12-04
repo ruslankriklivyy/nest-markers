@@ -20,7 +20,7 @@ export class AuthService {
 
   async registration(userDto: UserRegistrationDto) {
     const { full_name, email, password, avatar_id } = userDto;
-    const user = await this.userService.getOne(email);
+    const user = await this.userService.getOneByEmail(email);
 
     if (user) {
       throw new HttpException(
@@ -46,12 +46,15 @@ export class AuthService {
 
     await this.tokenService.saveToken(newUser.id, tokens.refresh_token);
 
-    return { ...tokens, user: newUser };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: newUserPassword, ...userInfo } = newUser;
+
+    return { ...tokens, user: userInfo };
   }
 
   async login(userDto: UserLoginDto) {
     const { email, password } = userDto;
-    const user = await this.userService.getOne(email);
+    const user = await this.userService.getOneByEmail(email);
 
     if (!user) {
       throw new HttpException(
@@ -79,7 +82,10 @@ export class AuthService {
 
     await this.tokenService.saveToken(user.id, tokens.refresh_token);
 
-    return { ...tokens, user: user };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: newUserPassword, ...userInfo } = user;
+
+    return { ...tokens, user: userInfo };
   }
 
   async signInFromGoogle(accessToken: string): Promise<IUserAuth> {
@@ -89,7 +95,7 @@ export class AuthService {
       ),
     );
 
-    const userFromBD = await this.userService.getOne(data.email);
+    const userFromBD = await this.userService.getOneByEmail(data.email);
 
     const newUser: CreateUserDto = {
       full_name: data.name,
@@ -128,7 +134,7 @@ export class AuthService {
 
     const decodedData =
       await this.tokenService.validateRefreshToken(refreshToken);
-    const user = await this.userService.getOne(decodedData.email);
+    const user = await this.userService.getOneByEmail(decodedData.email);
     const token = await this.tokenService.findRefreshToken(refreshToken);
 
     if (!decodedData || !token) {
@@ -146,5 +152,18 @@ export class AuthService {
     await this.tokenService.saveToken(user.id, tokens.refresh_token);
 
     return { ...tokens, user };
+  }
+
+  async validateUser(email: string, password: string) {
+    const user = await this.userService.getOneByEmail(email);
+    const isPasswordEquals = await bcrypt.compare(password, user.password);
+
+    if (user && isPasswordEquals) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...result } = user;
+      return result;
+    }
+
+    return null;
   }
 }

@@ -5,19 +5,22 @@ import { MarkerService } from './marker.service';
 import { MarkerController } from './marker.controller';
 import { DatabaseModule } from '@/modules/database/database.module';
 import { markerProviders } from '@/modules/marker/marker.providers';
-import { TokenService } from '@/modules/token/token.service';
-import { AuthGuard } from '@/modules/auth/guard/auth.guard';
-import { tokenProviders } from '@/modules/token/token.providers';
+import { JwtAuthGuard } from '@/modules/auth/guard/jwt-auth.guard';
+import { UserModule } from '@/modules/user/user.module';
+import { TokenModule } from '@/modules/token/token.module';
+import { FileModule } from '@/modules/file/file.module';
+import { LayerModule } from '@/modules/layer/layer.module';
 
 @Module({
-  providers: [
-    MarkerService,
-    AuthGuard,
-    TokenService,
-    ...tokenProviders,
-    ...markerProviders,
+  imports: [
+    JwtModule.register({}),
+    DatabaseModule,
+    TokenModule,
+    FileModule,
+    UserModule,
+    LayerModule,
   ],
+  providers: [MarkerService, JwtAuthGuard, ...markerProviders],
   controllers: [MarkerController],
-  imports: [JwtModule.register({}), DatabaseModule],
 })
 export class MarkerModule {}

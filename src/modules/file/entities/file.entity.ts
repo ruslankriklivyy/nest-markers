@@ -1,10 +1,23 @@
-import { Column, Entity } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-import { MainEntity } from '@/modules/database/entities/main.entity';
-import { FILE_ENTITY_TYPES } from '@/consts/FILE_ENTITY_TYPES';
+import { User } from '@/modules/user/entities/user.entity';
+import { Marker } from '@/modules/marker/entities/marker.entity';
 
 @Entity({ name: 'files' })
-export class File extends MainEntity {
+export class File extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Column({ type: 'varchar', length: 80 })
   filename: string;
 
@@ -17,14 +30,30 @@ export class File extends MainEntity {
   @Column({ type: 'float' })
   size: number;
 
-  @Column({ name: 'entity_id', nullable: true })
-  entity_id: number | null;
+  @Column({ nullable: true, select: false })
+  user_id: number;
 
-  @Column({
-    name: 'entity_type',
-    enum: FILE_ENTITY_TYPES,
-    default: null,
-    nullable: true,
+  @Column({ nullable: true, select: false })
+  marker_id: number;
+
+  @OneToOne(() => User)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @ManyToOne(() => Marker, (marker) => marker.id)
+  @JoinColumn({ name: 'marker_id' })
+  marker: Marker;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
   })
-  entity_type: FILE_ENTITY_TYPES | null;
+  created_at: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updated_at: Date;
 }

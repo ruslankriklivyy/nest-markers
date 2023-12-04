@@ -12,9 +12,9 @@ import { Request } from 'express';
 import { UserService } from './user.service';
 import { TokenService } from '@/modules/token/token.service';
 import { UpdateUserDto } from '@/modules/user/dto/user-update.dto';
-import { AuthGuard } from '@/modules/auth/guard/auth.guard';
+import { JwtAuthGuard } from '@/modules/auth/guard/jwt-auth.guard';
 
-@UseGuards(AuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UserController {
   constructor(
@@ -33,7 +33,7 @@ export class UserController {
     const { email } =
       await this.tokenService.validateRefreshToken(refresh_token);
 
-    return this.userService.getOne(email);
+    return this.userService.getOneByEmail(email);
   }
 
   @Put(':id')

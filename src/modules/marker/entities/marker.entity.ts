@@ -1,12 +1,24 @@
-import { Column, Entity, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryGeneratedColumn,
+  BaseEntity,
+} from 'typeorm';
 
-import { MainEntity } from '@/modules/database/entities/main.entity';
 import { File } from '@/modules/file/entities/file.entity';
 import { User } from '@/modules/user/entities/user.entity';
 import { Layer } from '@/modules/layer/entities/layer.entity';
 
 @Entity({ name: 'markers' })
-export class Marker extends MainEntity {
+export class Marker extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Column({ type: 'varchar', length: 10 })
   color: string;
 
@@ -15,10 +27,6 @@ export class Marker extends MainEntity {
 
   @Column({ type: 'varchar' })
   description: string;
-
-  @OneToMany(() => File, (file) => file.entity_id)
-  @JoinColumn({ name: 'images' })
-  images: File[];
 
   @Column({ type: 'float' })
   latitude: number;
@@ -30,7 +38,29 @@ export class Marker extends MainEntity {
   @JoinColumn({ name: 'layer_id' })
   layer: Layer;
 
+  @Column({ select: false })
+  layer_id: number;
+
+  @OneToMany(() => File, (file) => file.marker)
+  images: File[];
+
   @ManyToOne(() => User, (user) => user.id)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @Column({ select: false })
+  user_id: number;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  created_at: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updated_at: Date;
 }

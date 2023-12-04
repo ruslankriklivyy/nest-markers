@@ -12,6 +12,8 @@ import { tokenProviders } from '@/modules/token/token.providers';
 import { userProviders } from '@/modules/user/user.providers';
 import { fileProviders } from '@/modules/file/file.providers';
 import { FileService } from '@/modules/file/file.service';
+import { JwtStrategy } from '@/modules/auth/strategy/jwt.strategy';
+import { AuthJwtConfig } from '@/modules/auth/auth-jwt.config';
 
 @Module({
   controllers: [AuthController],
@@ -21,6 +23,7 @@ import { FileService } from '@/modules/file/file.service';
     MailService,
     UserService,
     FileService,
+    JwtStrategy,
     ...tokenProviders,
     ...userProviders,
     ...fileProviders,
@@ -30,7 +33,7 @@ import { FileService } from '@/modules/file/file.service';
       timeout: 5000,
       maxRedirects: 5,
     }),
-    JwtModule.register({}),
+    JwtModule.registerAsync({ useClass: AuthJwtConfig }),
     DatabaseModule,
   ],
 })

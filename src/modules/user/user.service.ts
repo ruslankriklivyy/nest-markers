@@ -19,17 +19,17 @@ export class UserService {
     return this.userRepository.find({ relations: { avatar: true } });
   }
 
-  async create(dto: CreateUserDto) {
+  async create(creatUserDto: CreateUserDto) {
     const user = this.userRepository.create({
-      full_name: dto.full_name,
-      email: dto.email,
-      password: dto.password,
-      is_activated: dto.is_activated,
+      full_name: creatUserDto.full_name,
+      email: creatUserDto.email,
+      password: creatUserDto.password,
+      is_activated: creatUserDto.is_activated,
     });
 
-    if (dto.avatar_id) {
+    if (creatUserDto.avatar_id) {
       await this.fileService.attach(
-        dto.avatar_id,
+        creatUserDto.avatar_id,
         user.id,
         FILE_ENTITY_TYPES.User,
       );
@@ -44,8 +44,11 @@ export class UserService {
     return this.userRepository.findOneBy({ id });
   }
 
-  getOne(email: string) {
-    return this.userRepository.findOneBy({ email });
+  getOneByEmail(email: string) {
+    return this.userRepository.findOne({
+      where: { email },
+      select: ['id', 'email', 'password'],
+    });
   }
 
   async updateOne(id: number, dto: UpdateUserDto) {

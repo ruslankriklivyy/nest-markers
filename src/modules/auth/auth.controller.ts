@@ -1,10 +1,19 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 
 import { UserRegistrationDto } from '../user/dto/user-registration.dto';
 import { UserLoginDto } from '../user/dto/user-login.dto';
 import { AuthService } from './auth.service';
+import { JwtAuthGuard } from '@/modules/auth/guard/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -45,6 +54,7 @@ export class AuthController {
     return data;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('logout')
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const { refresh_token } = req.cookies;
@@ -71,16 +81,6 @@ export class AuthController {
 
     return data;
   }
-
-  // @Get('activate/:link')
-  // @Redirect()
-  // async activate(@Param() { link }) {
-  //   const url = this.configService.get('CLIENT_URL');
-  //
-  //   await this.authService.activate(link);
-  //
-  //   return { url };
-  // }
 
   @Post('google')
   async googleAuth(
