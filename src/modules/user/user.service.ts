@@ -42,8 +42,8 @@ export class UserService {
     return user;
   }
 
-  getById(id: number) {
-    return this.userRepository.findOneBy({ id });
+  getById(id: number, relations?: string[]) {
+    return this.userRepository.findOne({ where: { id }, relations });
   }
 
   getOneByEmail(email: string) {

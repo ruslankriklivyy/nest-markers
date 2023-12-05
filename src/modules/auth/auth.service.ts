@@ -153,17 +153,4 @@ export class AuthService {
 
     return { ...tokens, user };
   }
-
-  async validateUser(email: string, password: string) {
-    const user = await this.userService.getOneByEmail(email);
-    const isPasswordEquals = await bcrypt.compare(password, user.password);
-
-    if (user && isPasswordEquals) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...result } = user;
-      return result;
-    }
-
-    return null;
-  }
 }

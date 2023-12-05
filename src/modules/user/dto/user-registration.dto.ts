@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UserRegistrationDto {
   constructor(
@@ -19,18 +20,22 @@ export class UserRegistrationDto {
     this.password = password;
   }
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   full_name: string;
 
+  @ApiProperty()
   @IsEmail()
   @IsString()
   email: string;
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   password: string;
 
+  @ApiProperty({ type: 'number', nullable: true, default: 1 })
   @IsOptional()
   @IsInt()
   avatar_id?: number | null;

@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { User } from '@/modules/user/entities/user.entity';
 import { Marker } from '@/modules/marker/entities/marker.entity';
@@ -17,12 +18,15 @@ import { LAYER_TYPE } from '@/consts/LAYER_TYPE_PUBLIC';
 
 @Entity({ name: 'layers' })
 export class Layer extends BaseEntity {
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty()
   @Column({ type: 'varchar', length: 80 })
   name: string;
 
+  @ApiProperty()
   @Column({ type: 'enum', enum: LAYER_TYPE, default: LAYER_TYPE.Public })
   type: LAYER_TYPE;
 
@@ -45,6 +49,7 @@ export class Layer extends BaseEntity {
   @Column({ select: false })
   author_id: number;
 
+  @ApiProperty()
   @OneToMany(() => Marker, (marker) => marker.layer, {
     onDelete: 'CASCADE',
     nullable: true,
@@ -52,20 +57,24 @@ export class Layer extends BaseEntity {
   @JoinColumn({ name: 'marker_ids' })
   markers: Marker[];
 
+  @ApiProperty()
   @ManyToOne(() => User, (user) => user.id)
   @JoinColumn({ name: 'author_id' })
   author: User;
 
+  @ApiProperty()
   @OneToMany(() => CustomField, (customField) => customField.layer)
   @JoinColumn({ name: 'custom_fields_ids' })
   custom_fields: CustomField[];
 
+  @ApiProperty()
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
   created_at: Date;
 
+  @ApiProperty()
   @UpdateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',

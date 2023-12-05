@@ -1,11 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+
 import { CustomFieldTypeService } from './custom-field-type.service';
 import { CreateCustomFieldTypeDto } from './dto/create-custom-field-type.dto';
 import { UpdateCustomFieldTypeDto } from './dto/update-custom-field-type.dto';
 
-@Controller('custom-field-type')
+@ApiTags('custom-field-types')
+@Controller('custom-field-types')
 export class CustomFieldTypeController {
-  constructor(private readonly customFieldTypeService: CustomFieldTypeService) {}
+  constructor(
+    private readonly customFieldTypeService: CustomFieldTypeService,
+  ) {}
 
   @Post()
   create(@Body() createCustomFieldTypeDto: CreateCustomFieldTypeDto) {
@@ -23,7 +36,10 @@ export class CustomFieldTypeController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCustomFieldTypeDto: UpdateCustomFieldTypeDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateCustomFieldTypeDto: UpdateCustomFieldTypeDto,
+  ) {
     return this.customFieldTypeService.update(+id, updateCustomFieldTypeDto);
   }
 

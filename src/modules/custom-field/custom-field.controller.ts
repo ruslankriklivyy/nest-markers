@@ -7,11 +7,14 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+
 import { CustomFieldService } from './custom-field.service';
 import { CreateCustomFieldDto } from './dto/create-custom-field.dto';
 import { UpdateCustomFieldDto } from './dto/update-custom-field.dto';
 
-@Controller('custom-field')
+@ApiTags('custom-fields')
+@Controller('custom-fields')
 export class CustomFieldController {
   constructor(private readonly customFieldService: CustomFieldService) {}
 

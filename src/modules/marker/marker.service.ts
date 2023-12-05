@@ -55,6 +55,8 @@ export class MarkerService {
           FILE_ENTITY_TYPES.Marker,
         );
       }
+
+      return marker;
     } catch (error) {
       throw new HttpException(
         {

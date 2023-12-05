@@ -2,11 +2,13 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Post,
   Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 
@@ -14,7 +16,9 @@ import { UserRegistrationDto } from '../user/dto/user-registration.dto';
 import { UserLoginDto } from '../user/dto/user-login.dto';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from '@/modules/auth/guard/jwt-auth.guard';
+import { AuthResultDto } from '@/modules/auth/dto/auth-result.dto';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -23,6 +27,8 @@ export class AuthController {
   ) {}
 
   @Post('registration')
+  @HttpCode(201)
+  @ApiResponse({ status: 201, type: AuthResultDto })
   async registration(
     @Body() dto: UserRegistrationDto,
     @Res({ passthrough: true }) res: Response,
@@ -39,6 +45,8 @@ export class AuthController {
   }
 
   @Post('login')
+  @HttpCode(201)
+  @ApiResponse({ status: 201, type: AuthResultDto })
   async login(
     @Body() dto: UserLoginDto,
     @Res({ passthrough: true }) res: Response,

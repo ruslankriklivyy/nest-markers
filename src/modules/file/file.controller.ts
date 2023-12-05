@@ -18,6 +18,7 @@ import { join } from 'path';
 import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 
 import { FileService } from './file.service';
 import { JwtAuthGuard } from '@/modules/auth/guard/jwt-auth.guard';
@@ -25,6 +26,7 @@ import { MAX_FILE_SIZE_KB } from '@/consts/MAX_FILE_SIZE_KB';
 import { ALLOWED_FILE_EXTENSIONS } from '@/consts/ALLOWED_FILE_EXTENSIONS';
 import { uploadFileLocalOptions } from '@/config/upload-file.config';
 
+@ApiTags('files')
 @Controller('files')
 export class FileController {
   constructor(
@@ -37,8 +39,6 @@ export class FileController {
     @Param('filename') filename: string,
     @Res({ passthrough: true }) res: Response,
   ) {
-    console.log('here');
-
     const fileType = filename.split('.').pop();
     let contentType = 'text/plain';
 
@@ -73,6 +73,18 @@ export class FileController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   @UseInterceptors(FileInterceptor('file', uploadFileLocalOptions))
   createOne(
     @UploadedFile(
@@ -85,7 +97,6 @@ export class FileController {
     )
     file: Express.Multer.File,
   ) {
-    console.log('FILE', file);
     return this.fileService.createOne(file);
   }
 
