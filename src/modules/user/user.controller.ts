@@ -24,7 +24,7 @@ export class UserController {
 
   @Get()
   getAll() {
-    return this.userService.getAll();
+    return this.userService.getAll(['avatar', 'role', 'role.permissions']);
   }
 
   @Get('current')

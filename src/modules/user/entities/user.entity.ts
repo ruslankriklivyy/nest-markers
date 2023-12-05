@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -12,6 +13,7 @@ import {
 
 import { File } from '@/modules/file/entities/file.entity';
 import { Marker } from '@/modules/marker/entities/marker.entity';
+import { Role } from '@/modules/role/entities/role.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -33,8 +35,15 @@ export class User extends BaseEntity {
   @Column({ select: false, nullable: true })
   avatar_id: number;
 
+  @Column({ select: false })
+  role_id: number;
+
   @Column({ type: 'integer', array: true, select: false, default: [] })
   marker_ids: number[];
+
+  @ManyToOne(() => Role, (role) => role.id)
+  @JoinColumn({ name: 'role_id' })
+  role: Role;
 
   @OneToOne(() => File)
   @JoinColumn({ name: 'avatar_id' })

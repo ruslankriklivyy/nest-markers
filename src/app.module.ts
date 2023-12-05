@@ -13,6 +13,9 @@ import { DatabaseModule } from '@/modules/database/database.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from '@/modules/database/database.config';
 import { CustomFieldTypeModule } from '@/modules/custom-field-type/custom-field-type.module';
+import { RoleModule } from '@/modules/role/role.module';
+import { PermissionModule } from '@/modules/permission/permission.module';
+import { RolePermissionModule } from '@/modules/role-permission/role-permission.module';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { CustomFieldTypeModule } from '@/modules/custom-field-type/custom-field-
     DatabaseModule,
     TypeOrmModule.forRoot(dataSourceOptions),
     CustomFieldTypeModule,
+    RoleModule,
+    PermissionModule,
+    RolePermissionModule,
   ],
 })
 export class AppModule {}

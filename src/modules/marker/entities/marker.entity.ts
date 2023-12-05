@@ -41,7 +41,14 @@ export class Marker extends BaseEntity {
   @Column({ select: false })
   layer_id: number;
 
-  @OneToMany(() => File, (file) => file.marker)
+  @Column({ select: false, type: 'integer', array: true, default: [] })
+  images_ids: number[];
+
+  @OneToMany(() => File, (file) => file.marker, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'images_ids' })
   images: File[];
 
   @ManyToOne(() => User, (user) => user.id)

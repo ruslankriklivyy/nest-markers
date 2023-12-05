@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
+import { difference } from 'lodash';
 
 import { CreateMarkerDto } from './dto/create-marker.dto';
 import { Marker } from '@/modules/marker/entities/marker.entity';
@@ -16,7 +17,7 @@ export class MarkerService {
   ) {}
 
   getAll(relations?: string[]) {
-    return this.markerRepository.find({ relations: relations });
+    return this.markerRepository.find({ relations });
   }
 
   getOne(id: number) {
@@ -65,11 +66,27 @@ export class MarkerService {
     }
   }
 
-  updateOne(id: number, userId: number, markerDto: UpdateMarkerDto) {
-    return this.markerRepository.update({ id, user_id: userId }, markerDto);
+  async updateOne(id: number, userId: number, markerDto: UpdateMarkerDto) {
+    const marker = await this.markerRepository.findOne({
+      where: { id, user_id: userId },
+      select: ['images'],
+      relations: ['images'],
+    });
+    const { images_ids, ...newMarker } = markerDto;
+
+    const imagesIdsDifference = difference(
+      marker.images.map((image) => image.id),
+      images_ids,
+    );
+
+    if (imagesIdsDifference?.length) {
+      await this.fileService.deleteMany(imagesIdsDifference);
+    }
+
+    return this.markerRepository.update({ id, user_id: userId }, newMarker);
   }
 
   deleteOne(id: number, userId: number) {
-    return this.markerRepository.delete({ id, user: { id: userId } });
+    return this.markerRepository.delete({ id, user_id: userId });
   }
 }

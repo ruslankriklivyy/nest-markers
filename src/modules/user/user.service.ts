@@ -15,8 +15,10 @@ export class UserService {
     private fileService: FileService,
   ) {}
 
-  getAll() {
-    return this.userRepository.find({ relations: { avatar: true } });
+  getAll(relations?: string[]) {
+    return this.userRepository.find({
+      relations,
+    });
   }
 
   async create(creatUserDto: CreateUserDto) {

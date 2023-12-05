@@ -1,9 +1,14 @@
 import 'reflect-metadata';
-import { runSeeders } from 'typeorm-extension';
 
 import dataSource from './database.config';
+import InitialSeed from '@/modules/database/seeds/initial.seed';
 
 dataSource.initialize().then(async () => {
-  await runSeeders(dataSource);
-  process.exit();
+  try {
+    await InitialSeed();
+  } catch (error) {
+    console.log('Seed error: ', error);
+  } finally {
+    process.exit();
+  }
 });

@@ -60,6 +60,10 @@ export class FileService {
     return this.fileRepository.delete({ id: fileId });
   }
 
+  deleteMany(filesIds: number[]) {
+    return this.fileRepository.delete({ id: In(filesIds) });
+  }
+
   async attach(
     fileId: number,
     entityId: number,

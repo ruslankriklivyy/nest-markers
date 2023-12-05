@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -6,21 +7,24 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { CustomField } from '@/modules/custom-field/entities/custom-field.entity';
+import { RolePermission } from '@/modules/role-permission/entities/role-permission.entity';
 
-@Entity({ name: 'custom_field_types' })
-export class CustomFieldType {
+@Entity({ name: 'permissions' })
+export class Permission extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: 'varchar', length: 80 })
   name: string;
 
-  @Column({ type: 'varchar', length: 80 })
+  @Column({ type: 'varchar', unique: true, length: 80 })
   slug: string;
 
-  @OneToMany(() => CustomField, (customField) => customField.custom_field_type)
-  custom_fields: CustomField[];
+  @OneToMany(
+    () => RolePermission,
+    (rolePermission) => rolePermission.permission,
+  )
+  roles: RolePermission[];
 
   @CreateDateColumn({
     type: 'timestamp',
