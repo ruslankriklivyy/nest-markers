@@ -72,12 +72,6 @@ export class TokenService {
     return this.tokenRepository.findOneBy({ refresh_token: refreshToken });
   }
 
-  validateAccessToken(token: string) {
-    return this.jwt.verifyAsync(token, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
-    });
-  }
-
   validateRefreshToken(token: string) {
     try {
       return this.jwt.verify(token, {

@@ -7,6 +7,7 @@ import {
   Body,
   Put,
   SetMetadata,
+  Delete,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { ApiTags } from '@nestjs/swagger';
@@ -37,10 +38,13 @@ export class UserController {
   @Get('current')
   async getOne(@Req() req: Request) {
     const { refresh_token } = req.cookies;
-    const { email } =
-      await this.tokenService.validateRefreshToken(refresh_token);
-
-    return this.userService.getOneByEmail(email);
+    const user = await this.tokenService.validateRefreshToken(refresh_token);
+    return this.userService.getById(user.id, [
+      'avatar',
+      'role',
+      'role.permissions',
+      'role.permissions.permission',
+    ]);
   }
 
   @SetMetadata('permission', { slug: 'users', type: PermissionType.Editable })
@@ -48,5 +52,10 @@ export class UserController {
   @Put(':id')
   updateOne(@Param() { id }, @Body() dto: UpdateUserDto) {
     return this.userService.updateOne(id, dto);
+  }
+
+  @Delete(':id')
+  deleteOne(@Param() { id }) {
+    return this.userService.deleteOne(id);
   }
 }
