@@ -20,9 +20,15 @@ export default async function RolePermissionSeed() {
   adminRoleMarkersPermission.permission_id = 3;
   adminRoleMarkersPermission.type = PermissionType.Editable;
 
+  const adminRoleRolesPermission = new RolePermission();
+  adminRoleRolesPermission.role_id = 1;
+  adminRoleRolesPermission.permission_id = 4;
+  adminRoleRolesPermission.type = PermissionType.Editable;
+
   await rolePermissionRepository.insert([
     adminRoleUsersPermission,
     adminRoleLayersPermission,
     adminRoleMarkersPermission,
+    adminRoleRolesPermission,
   ]);
 }

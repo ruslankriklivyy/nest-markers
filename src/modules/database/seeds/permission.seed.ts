@@ -16,9 +16,14 @@ export default async function PermissionSeed() {
   markersPermission.name = 'Markers';
   markersPermission.slug = 'markers';
 
+  const rolesPermission = new Permission();
+  rolesPermission.name = 'Roles';
+  rolesPermission.slug = 'roles';
+
   await permissionRepository.insert([
     usersPermission,
     layersPermission,
     markersPermission,
+    rolesPermission,
   ]);
 }
