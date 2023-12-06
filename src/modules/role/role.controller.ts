@@ -14,7 +14,7 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 
 @ApiTags('roles')
-@Controller('role')
+@Controller('roles')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
@@ -25,12 +25,15 @@ export class RoleController {
 
   @Get()
   findAll() {
-    return this.roleService.findAll();
+    return this.roleService.findAll(['permissions', 'permissions.permission']);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.roleService.findOne(+id);
+    return this.roleService.findOne(+id, [
+      'permissions',
+      'permissions.permission',
+    ]);
   }
 
   @Patch(':id')

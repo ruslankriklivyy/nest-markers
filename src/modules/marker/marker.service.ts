@@ -85,6 +85,14 @@ export class MarkerService {
       await this.fileService.deleteMany(imagesIdsDifference);
     }
 
+    if (images_ids?.length) {
+      await this.fileService.attachMany(
+        images_ids,
+        marker.id,
+        FILE_ENTITY_TYPES.Marker,
+      );
+    }
+
     return this.markerRepository.update({ id, user_id: userId }, newMarker);
   }
 

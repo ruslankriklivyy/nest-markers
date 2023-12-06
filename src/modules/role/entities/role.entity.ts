@@ -21,9 +21,6 @@ export class Role extends BaseEntity {
   @Column({ type: 'varchar', unique: true, length: 80 })
   slug: string;
 
-  @Column({ type: 'integer', select: false, nullable: true, default: null })
-  role_permission_id: number;
-
   @OneToMany(() => User, (user) => user.role)
   users: User[];
 
