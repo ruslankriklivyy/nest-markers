@@ -16,6 +16,7 @@ import { CustomFieldTypeModule } from '@/modules/custom-field-type/custom-field-
 import { RoleModule } from '@/modules/role/role.module';
 import { PermissionModule } from '@/modules/permission/permission.module';
 import { RolePermissionModule } from '@/modules/role-permission/role-permission.module';
+import { NotificationModule } from '@/modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { RolePermissionModule } from '@/modules/role-permission/role-permission.
     RoleModule,
     PermissionModule,
     RolePermissionModule,
+    NotificationModule,
   ],
 })
 export class AppModule {}

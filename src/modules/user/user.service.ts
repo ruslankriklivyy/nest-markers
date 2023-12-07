@@ -37,9 +37,7 @@ export class UserService {
       );
     }
 
-    await user.save();
-
-    return user;
+    return this.userRepository.save(user);
   }
 
   getById(id: number, relations?: string[]) {
@@ -57,9 +55,7 @@ export class UserService {
     if (dto.avatar_id) {
       await this.fileService.attach(dto.avatar_id, id, FILE_ENTITY_TYPES.User);
     }
-
     const userDto = new UserDto(dto);
-
     return this.userRepository.update({ id }, userDto);
   }
 

@@ -52,10 +52,6 @@ export class RolePermissionService {
     );
   }
 
-  updateMany(roleId: number, permissions: CreateRolePermissionDto[]) {
-    return this.rolePermissionRepository.upsert(permissions, ['id']);
-  }
-
   deleteOne(id: number) {
     return this.rolePermissionRepository.delete({ id });
   }

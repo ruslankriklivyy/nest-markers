@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpCode,
   Post,
   Req,
   Res,
@@ -17,6 +16,9 @@ import { UserLoginDto } from '../user/dto/user-login.dto';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from '@/modules/auth/guard/jwt-auth.guard';
 import { AuthResultDto } from '@/modules/auth/dto/auth-result.dto';
+import { CurrentUser } from '@/decorators/current-user.decorator';
+import { User } from '@/modules/user/entities/user.entity';
+import { RefreshAuthDto } from '@/modules/auth/dto/refresh-auth.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -27,67 +29,26 @@ export class AuthController {
   ) {}
 
   @Post('registration')
-  @HttpCode(201)
-  @ApiResponse({ status: 201, type: AuthResultDto })
-  async registration(
-    @Body() dto: UserRegistrationDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    const data = await this.authService.registration(dto);
-
-    res.cookie('refresh_token', data.refresh_token, {
-      maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
-      sameSite: 'none',
-      secure: true,
-    });
-
-    return data;
+  @ApiResponse({ type: AuthResultDto })
+  registration(@Body() dto: UserRegistrationDto) {
+    return this.authService.registration(dto);
   }
 
   @Post('login')
-  @HttpCode(201)
-  @ApiResponse({ status: 201, type: AuthResultDto })
-  async login(
-    @Body() dto: UserLoginDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    const data = await this.authService.login(dto);
-
-    res.cookie('refresh_token', data.refresh_token, {
-      maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
-      sameSite: 'none',
-      secure: true,
-    });
-
-    return data;
+  @ApiResponse({ type: AuthResultDto })
+  login(@Body() dto: UserLoginDto) {
+    return this.authService.login(dto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('logout')
-  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    const { refresh_token } = req.cookies;
-
-    res.set('Authorization', '');
-    res.clearCookie('refresh_token');
-
-    return await this.authService.logout(refresh_token);
+  logout(@CurrentUser() user: User) {
+    return this.authService.logout(user.id);
   }
 
   @Get('refresh')
-  async refresh(
-    @Res({ passthrough: true }) res: Response,
-    @Req() req: Request,
-  ) {
-    const { refresh_token } = req.cookies;
-    const data = await this.authService.refresh(refresh_token);
-
-    res.cookie('refresh_token', data.refresh_token, {
-      maxAge: +this.configService.get('REFRESH_COOKIE_MAX_AGE'),
-      sameSite: 'none',
-      secure: true,
-    });
-
-    return data;
+  async refresh(@Body() refreshAuthDto: RefreshAuthDto) {
+    return this.authService.refresh(refreshAuthDto);
   }
 
   @Post('google')

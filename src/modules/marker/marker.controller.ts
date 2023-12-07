@@ -9,7 +9,7 @@ import {
   UseGuards,
   SetMetadata,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 import { MarkerService } from './marker.service';
 import { CreateMarkerDto } from './dto/create-marker.dto';
@@ -37,6 +37,7 @@ export class MarkerController {
 
   @SetMetadata('permission', { slug: 'markers', type: PermissionType.Editable })
   @UseGuards(JwtAuthGuard, CheckPermission)
+  @ApiBody({ type: CreateMarkerDto })
   @Post()
   createOne(@Body() dto: CreateMarkerDto, @CurrentUser() user: User) {
     return this.markerService.createOne(user, dto);
@@ -44,6 +45,7 @@ export class MarkerController {
 
   @SetMetadata('permission', { slug: 'markers', type: PermissionType.Editable })
   @UseGuards(JwtAuthGuard, CheckPermission)
+  @ApiBody({ type: CreateMarkerDto })
   @Patch('/:id')
   updateOne(
     @Param('id') id: number,

@@ -10,6 +10,8 @@ import { UserModule } from '@/modules/user/user.module';
 import { TokenModule } from '@/modules/token/token.module';
 import { FileModule } from '@/modules/file/file.module';
 import { LayerModule } from '@/modules/layer/layer.module';
+import { MarkerGateway } from '@/modules/marker/marker.gateway';
+import { NotificationModule } from '@/modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -19,8 +21,10 @@ import { LayerModule } from '@/modules/layer/layer.module';
     FileModule,
     UserModule,
     LayerModule,
+    NotificationModule,
   ],
-  providers: [MarkerService, JwtAuthGuard, ...markerProviders],
+  providers: [MarkerService, JwtAuthGuard, MarkerGateway, ...markerProviders],
   controllers: [MarkerController],
+  exports: [MarkerService],
 })
 export class MarkerModule {}

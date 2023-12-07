@@ -64,8 +64,8 @@ export class TokenService {
     });
   }
 
-  removeToken(refreshToken: string) {
-    return this.tokenRepository.delete({ refresh_token: refreshToken });
+  removeToken(userId: number) {
+    return this.tokenRepository.delete({ user: { id: userId } });
   }
 
   findRefreshToken(refreshToken: string) {

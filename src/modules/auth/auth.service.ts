@@ -9,6 +9,7 @@ import { IUserAuth } from '../user/dto/user.dto';
 import { UserLoginDto } from '../user/dto/user-login.dto';
 import { UserService } from '@/modules/user/user.service';
 import { CreateUserDto } from '@/modules/user/dto/create-user.dto';
+import { RefreshAuthDto } from '@/modules/auth/dto/refresh-auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -117,12 +118,10 @@ export class AuthService {
     await this.tokenService.saveToken(userFromBD.id, tokens.refresh_token);
   }
 
-  async logout(refreshToken: string) {
-    return await this.tokenService.removeToken(refreshToken);
-  }
+  async refresh(refreshAuthDto: RefreshAuthDto) {
+    const { refresh_token } = refreshAuthDto;
 
-  async refresh(refreshToken: string) {
-    if (!refreshToken) {
+    if (!refresh_token) {
       throw new HttpException(
         {
           status: HttpStatus.UNAUTHORIZED,
@@ -133,9 +132,9 @@ export class AuthService {
     }
 
     const decodedData =
-      await this.tokenService.validateRefreshToken(refreshToken);
+      await this.tokenService.validateRefreshToken(refresh_token);
     const user = await this.userService.getOneByEmail(decodedData.email);
-    const token = await this.tokenService.findRefreshToken(refreshToken);
+    const token = await this.tokenService.findRefreshToken(refresh_token);
 
     if (!decodedData || !token) {
       throw new HttpException(
@@ -152,5 +151,9 @@ export class AuthService {
     await this.tokenService.saveToken(user.id, tokens.refresh_token);
 
     return { ...tokens, user };
+  }
+
+  logout(userId: number) {
+    return this.tokenService.removeToken(userId);
   }
 }

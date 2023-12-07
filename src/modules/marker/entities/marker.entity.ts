@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
   BaseEntity,
+  DeleteDateColumn,
 } from 'typeorm';
 
 import { File } from '@/modules/file/entities/file.entity';
@@ -70,4 +71,12 @@ export class Marker extends BaseEntity {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   updated_at: Date;
+
+  @DeleteDateColumn({
+    type: 'timestamp',
+    nullable: true,
+    default: null,
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  deletedAt: Date;
 }

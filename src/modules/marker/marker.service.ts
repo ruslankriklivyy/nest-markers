@@ -8,12 +8,14 @@ import { UpdateMarkerDto } from '@/modules/marker/dto/update-marker.dto';
 import { User } from '@/modules/user/entities/user.entity';
 import { FileService } from '@/modules/file/file.service';
 import { FILE_ENTITY_TYPES } from '@/consts/FILE_ENTITY_TYPES';
+import { MarkerGateway } from '@/modules/marker/marker.gateway';
 
 @Injectable()
 export class MarkerService {
   constructor(
     @Inject('MARKER_REPOSITORY') private markerRepository: Repository<Marker>,
     private readonly fileService: FileService,
+    private readonly markerGateway: MarkerGateway,
   ) {}
 
   getAll(relations?: string[]) {
@@ -56,8 +58,11 @@ export class MarkerService {
         );
       }
 
-      return marker;
+      await this.markerGateway.listenForCreateMarker(newMarker.id);
+
+      return 'Marker created';
     } catch (error) {
+      console.log(error);
       throw new HttpException(
         {
           status: HttpStatus.BAD_REQUEST,
@@ -93,10 +98,21 @@ export class MarkerService {
       );
     }
 
-    return this.markerRepository.update({ id, user_id: userId }, newMarker);
+    const updateResult = await this.markerRepository.update(
+      { id, user_id: userId },
+      newMarker,
+    );
+    await this.markerGateway.listenForUpdateMarker(id);
+
+    return updateResult;
   }
 
-  deleteOne(id: number, userId: number) {
-    return this.markerRepository.delete({ id, user_id: userId });
+  async deleteOne(id: number, userId: number) {
+    const deleteResult = await this.markerRepository.softDelete({
+      id,
+      user_id: userId,
+    });
+    await this.markerGateway.listenForDeleteMarker(id);
+    return deleteResult;
   }
 }
